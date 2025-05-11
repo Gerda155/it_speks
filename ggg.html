@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="lv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panelis</title>
+    <link rel="stylesheet" href="files/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script src="files/script.js" defer></script>
+</head>
+
+<body>
+    <header class="topbar">
+        <div class="logo">Logo</div>
+        <div class="admin-box">
+            <p class="admin-name">Vārds Uzvārds</p>
+        </div>
+        <button class="logout-btn">Iziet</button>
+    </header>
+
+    <div class="main-container">
+        <!-- Сайдбар -->
+        <aside class="sidebar">
+            <ul class="sidebar-list">
+                <li class="sidebar-item">
+                    <div class="sidebar-header">
+                        <span>Jaunumi</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <div class="dropdown-item">Pēdējie raksti</div>
+                        <div class="dropdown-item">Nepublicētie</div>
+                    </div>
+                </li>
+                <li class="sidebar-item">
+                    <div class="sidebar-header">
+                        <span>Vakances</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <div class="dropdown-item">Atvērtās</div>
+                        <div class="dropdown-item">Arhīvs</div>
+                    </div>
+                </li>
+                <li class="sidebar-item">
+                    <div class="sidebar-header">
+                        <span>Moderatori</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="dropdown-content">
+                        <div class="dropdown-item">Aktīvie</div>
+                        <div class="dropdown-item">Pieprasījumi</div>
+                    </div>
+                </li>
+            </ul>
+
+            <button class="edit-button" onclick="window.location.href='edit-page.html'">Rediģēt</button>
+        </aside>
+
+        <!-- Контент -->
+        <main class="dashboard">
+            <!-- Статистика -->
+            <section class="stats-wrapper">
+                <div class="stats-cards">
+                    <div class="card">Stat 1</div>
+                    <div class="card">Stat 2</div>
+                    <div class="card">Stat 3</div>
+                </div>
+            </section>
+
+            <!-- Нижняя часть: изменения + график -->
+            <section class="bottom-sections">
+                <div class="changes-section">
+                    <h2>Pēdējās izmaiņas</h2>
+                    <div class="changes-table">
+                        <!-- Таблица -->
+                    </div>
+                </div>
+                <div class="chart-section">
+                    <h2>Aktivitātes diagramma</h2>
+                    <div class="chart">
+                        <!-- График -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+
+</html>

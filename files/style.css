@@ -1,0 +1,180 @@
+/* === Общие стили === */
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f4f6f8;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.logo {
+    font-weight: bold;
+}
+
+.admin-box {
+    background-color: #eef1f5;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.admin-name {
+    margin: 0;
+    text-align: center;
+}
+
+.logout-btn {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.main-container {
+    display: flex;
+}
+
+/* === Sidebar === */
+.sidebar {
+    width: 220px;
+    background-color: #e8edf2;
+    padding: 20px 10px;
+    height: calc(100vh - 60px);
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-item {
+    background-color: #d3dce6;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    transition: background-color 0.3s;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sidebar-header:hover {
+    background-color: #34d399;
+    color: white;
+}
+
+.sidebar-header i {
+    transition: transform 0.3s ease;
+}
+
+.sidebar-item.active .sidebar-header {
+    background-color: #34d399;
+    color: white;
+}
+
+.sidebar-item.active .sidebar-header i {
+    transform: rotate(180deg);
+}
+
+.dropdown-content {
+    max-height: 0;
+    overflow: hidden;
+    background-color: #e6f9f0;
+    padding: 0 16px;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+}
+
+.sidebar-item.active .dropdown-content {
+    max-height: 200px;
+    padding: 10px 16px;
+}
+
+/* === Контент === */
+.dashboard {
+    flex: 1;
+    padding: 20px;
+}
+
+/* Статистика */
+.stats-wrapper {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.stats-cards {
+    display: flex;
+    gap: 20px;
+}
+
+.card {
+    flex: 1;
+    background-color: #eaf0f6;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Нижняя секция: изменения + график рядом */
+.bottom-sections {
+    display: flex;
+    gap: 20px;
+}
+
+.changes-section,
+.chart-section {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.dropdown-content .dropdown-item {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dropdown-content .dropdown-item:hover {
+    background-color: #34d399;
+    color: white;
+}
+
+/* Кнопка редактировать */
+.edit-button {
+    margin-top: 30px;
+    display: block;
+    width: 100%;
+    background-color: #3b82f6;
+    color: white;
+    text-align: center;
+    padding: 12px 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-button:hover {
+    background-color: #2563eb;
+}
