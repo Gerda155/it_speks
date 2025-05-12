@@ -10,3 +10,8 @@ document.querySelectorAll('.sidebar-header').forEach(header => {
         item.classList.toggle('active');
     });
 }); // вкладки
+
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+} //resubmition
+

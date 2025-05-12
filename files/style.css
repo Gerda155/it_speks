@@ -1,8 +1,20 @@
 /* === Общие стили === */
+:root {
+    --main: #34d399;
+    --dark: #20815d;
+    --text-dark: #333;
+    --text-medium: #555;
+    --font-size-base: 18px;
+    --font-size-large: 20px;
+    --font-size-icon: 24px;
+}
+
 body {
     margin: 0;
     font-family: sans-serif;
     background-color: #f4f6f8;
+    font-size: var(--font-size-base);
+    color: var(--text-dark);
 }
 
 .topbar {
@@ -14,27 +26,38 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.logo {
-    font-weight: bold;
-}
-
-.admin-box {
-    background-color: #eef1f5;
-    padding: 10px 20px;
-    border-radius: 8px;
+.left-box {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 150px;
+}
+
+.logo img {
+    width: 250px;
 }
 
 .admin-name {
-    margin: 0;
-    text-align: center;
+    font-weight: bold;
+    background-color: #eef1f5;
+    padding: 10px 20px;
+    border-radius: 8px;
+    white-space: nowrap;
+    font-size: var(--font-size-large);
 }
 
 .logout-btn {
-    padding: 5px 10px;
+    padding: 10px 18px;
     cursor: pointer;
+    background-color: var(--main);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: var(--font-size-base);
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: var(--dark);
 }
 
 .main-container {
@@ -43,7 +66,7 @@ body {
 
 /* === Sidebar === */
 .sidebar {
-    width: 220px;
+    width: 400px;
     background-color: #e8edf2;
     padding: 20px 10px;
     height: calc(100vh - 60px);
@@ -69,27 +92,45 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
+    padding: 14px 18px;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-size: var(--font-size-base);
 }
 
 .sidebar-header:hover {
-    background-color: #34d399;
+    background-color: var(--dark);
     color: white;
 }
 
-.sidebar-header i {
+.chevron-icon i {
     transition: transform 0.3s ease;
+    font-size: var(--font-size-icon);
+    color: var(--text-dark);
+}
+
+.sidebar-label i {
+    margin-right: 10px;
+    font-size: var(--font-size-icon);
+    color: var(--main);
+}
+
+.sidebar-label span {
+    font-size: var(--font-size-base);
 }
 
 .sidebar-item.active .sidebar-header {
-    background-color: #34d399;
+    background-color: var(--main);
     color: white;
 }
 
 .sidebar-item.active .sidebar-header i {
+    color: white;
+}
+
+.sidebar-item.active .chevron-icon i {
     transform: rotate(180deg);
+    color: white;
 }
 
 .dropdown-content {
@@ -98,6 +139,7 @@ body {
     background-color: #e6f9f0;
     padding: 0 16px;
     transition: max-height 0.4s ease, padding 0.4s ease;
+    font-size: var(--font-size-base);
 }
 
 .sidebar-item.active .dropdown-content {
@@ -105,13 +147,57 @@ body {
     padding: 10px 16px;
 }
 
+.dropdown-content .dropdown-item {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: var(--text-dark);
+}
+
+.dropdown-content .dropdown-item:hover {
+    background-color: var(--dark);
+    color: white;
+}
+
 /* === Контент === */
 .dashboard {
     flex: 1;
     padding: 20px;
+    font-size: var(--font-size-base);
+}
+
+.dashboard h2{
+    font-size: var(--font-size-large);
 }
 
 /* Статистика */
+.stats-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 30px;
+}
+
+.stats-info i {
+    font-size: 48px;
+    color: var(--main);
+}
+
+.stats-info-info h3 {
+    margin: 0;
+    font-size: var(--font-size-large);
+    font-weight: bold;
+    color: var(--text-dark);
+}
+
+.stats-info-info p {
+    margin: 4px 0 0;
+    color: var(--text-medium);
+    font-size: var(--font-size-base);
+}
+
 .stats-wrapper {
     background-color: #ffffff;
     padding: 20px;
@@ -130,12 +216,23 @@ body {
     background-color: #eaf0f6;
     padding: 20px;
     border-radius: 10px;
+    font-size: var(--font-size-base);
 }
 
-/* Нижняя секция: изменения + график рядом */
+/* Нижняя секция: изменения + график */
 .bottom-sections {
     display: flex;
     gap: 20px;
+}
+
+.changes-info{
+    display: flex;
+    gap: 15px;
+}
+
+.changes-info i{
+    font-size: 48px;
+    color: var(--main);
 }
 
 .changes-section,
@@ -147,17 +244,10 @@ body {
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.dropdown-content .dropdown-item {
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.dropdown-content .dropdown-item:hover {
-    background-color: #34d399;
-    color: white;
+.changes-section h2,
+.chart-section h2 {
+    font-size: var(--font-size-large);
+    color: var(--text-dark);
 }
 
 /* Кнопка редактировать */
@@ -165,16 +255,137 @@ body {
     margin-top: 30px;
     display: block;
     width: 100%;
-    background-color: #3b82f6;
+    background-color: var(--main);
     color: white;
     text-align: center;
-    padding: 12px 0;
+    padding: 14px 0;
     border: none;
     border-radius: 6px;
+    font-size: var(--font-size-base);
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 .edit-button:hover {
-    background-color: #2563eb;
+    background-color: var(--dark);
 }
+
+.edit-button i {
+    margin-right: 8px;
+    font-size: var(--font-size-icon);
+}
+
+
+
+/*ВХОД ДЛЯ АДМИНОВ*/
+/* Фон всей страницы */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: sans-serif;
+    background: url("ielogFons.png");
+    background-size: cover;
+    color: var(--text-dark);
+}
+
+/* Центровка формы */
+.login-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.4); 
+}
+
+/* Блок с формой */
+.login-box {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 40px 30px;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Заголовок и текст */
+.login-box h1 {
+    font-size: 26px;
+    color: var(--main);
+    margin-bottom: 10px;
+}
+
+.login-subtitle {
+    font-size: 16px;
+    color: var(--text-medium);
+    margin-bottom: 30px;
+}
+
+/* Поля формы */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+input[type="text"],
+input[type="password"] {
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: var(--font-size-base);
+    outline: none;
+}
+
+input:focus {
+    border-color: var(--main);
+}
+
+/* Кнопка входа */
+button#ielogot {
+    background-color: var(--main);
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: var(--font-size-base);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button#ielogot:hover {
+    background-color: var(--dark);
+}
+
+button#ielogot i {
+    margin-right: 6px;
+}
+
+/* Ошибка */
+.kluda {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Ссылка */
+.back-to-main {
+    margin-top: 25px;
+    display: inline-block;
+    font-size: 16px;
+    color: var(--dark);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.back-to-main:hover {
+    color: var(--main);
+}
+
+.back-to-main i {
+    margin-right: 6px;
+}
+
+

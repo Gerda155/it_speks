@@ -12,21 +12,26 @@
 
 <body>
     <header class="topbar">
-        <div class="logo">Logo</div>
-        <div class="admin-box">
-            <p class="admin-name">Vārds Uzvārds</p>
+        <div class="left-box">
+            <div class="logo">
+                <img src="files/ITsLogo.png" alt="Logo">
+            </div>
+            <div class="admin-name">Vārds Uzvārds</div>
         </div>
         <button class="logout-btn">Iziet</button>
     </header>
 
     <div class="main-container">
-        <!-- Сайдбар -->
         <aside class="sidebar">
             <ul class="sidebar-list">
                 <li class="sidebar-item">
                     <div class="sidebar-header">
-                        <span>Jaunumi</span>
-                        <i class="fas fa-chevron-down"></i>
+                        <div class="sidebar-label">
+                            <i class="fas fa-newspaper"></i><span>Jaunumi</span>
+                        </div>
+                        <div class="chevron-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                     </div>
                     <div class="dropdown-content">
                         <div class="dropdown-item">Pēdējie raksti</div>
@@ -35,8 +40,12 @@
                 </li>
                 <li class="sidebar-item">
                     <div class="sidebar-header">
-                        <span>Vakances</span>
-                        <i class="fas fa-chevron-down"></i>
+                        <div class="sidebar-label">
+                            <i class="fas fa-briefcase"></i><span>Vakances</span>
+                        </div>
+                        <div class="chevron-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                     </div>
                     <div class="dropdown-content">
                         <div class="dropdown-item">Atvērtās</div>
@@ -45,8 +54,12 @@
                 </li>
                 <li class="sidebar-item">
                     <div class="sidebar-header">
-                        <span>Moderatori</span>
-                        <i class="fas fa-chevron-down"></i>
+                        <div class="sidebar-label">
+                            <i class="fas fa-user-shield"></i><span>Moderatori</span>
+                        </div>
+                        <div class="chevron-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
                     </div>
                     <div class="dropdown-content">
                         <div class="dropdown-item">Aktīvie</div>
@@ -55,13 +68,18 @@
                 </li>
             </ul>
 
-            <button class="edit-button" onclick="window.location.href='edit-page.html'">Rediģēt</button>
+            <button class="edit-button" onclick="window.location.href='edit-page.html'"><i class="fas fa-edit"></i> Rediģēt</button>
         </aside>
 
-        <!-- Контент -->
         <main class="dashboard">
-            <!-- Статистика -->
             <section class="stats-wrapper">
+                <div class="stats-info">
+                    <i class="fas fa-chart-pie"></i>
+                    <div class="stats-info-info">
+                        <h2>Statistika</h2>
+                        <p>Lorem, ipsum dolor.</p>
+                    </div>
+                </div>
                 <div class="stats-cards">
                     <div class="card">Stat 1</div>
                     <div class="card">Stat 2</div>
@@ -69,12 +87,29 @@
                 </div>
             </section>
 
-            <!-- Нижняя часть: изменения + график -->
             <section class="bottom-sections">
                 <div class="changes-section">
-                    <h2>Pēdējās izmaiņas</h2>
+                    <div class="changes-info">
+                        <i class="fas fa-poll-h"></i>
+                        <h2>Pēdējās izmaiņas</h2>
+                    </div>
                     <div class="changes-table">
-                        <!-- Таблица -->
+                        <table>
+                            <tr>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td>12</td>
+                                <td>12</td>
+                                <td>12</td>
+                                <td>12</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
                 <div class="chart-section">
