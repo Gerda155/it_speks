@@ -212,6 +212,7 @@ body {
 }
 
 .card {
+    display: flex;
     flex: 1;
     background-color: #eaf0f6;
     padding: 20px;
@@ -388,4 +389,13 @@ button#ielogot i {
     margin-right: 6px;
 }
 
-
+/*СТАТИЧНАЯ СТАТИСТИКА*/
+.progress-circle {
+    margin-top: 10px;
+    --d: 100px;
+    --progress: 40;
+    border-radius: var(--d);
+    height: var(--d);
+    width: var(--d);
+    background: conic-gradient( var(--main) calc(calc(var(--progress) / 100) * 360deg), transparent calc(calc(var(--progress) / 100) * 360deg));
+  }
