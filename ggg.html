@@ -34,9 +34,9 @@
                         </div>
                     </div>
                     <div class="dropdown-content">
-                        <div class="dropdown-item">Архивные</div>
-                        <div class="dropdown-item">Опубликованые</div>
-                        <div class="dropdown-item">Черновики</div>
+                        <a class="dropdown-item" href="crud.html">Архивные</a><br>
+                        <a class="dropdown-item" href="crud.html">Опубликованые</a><br>
+                        <a class="dropdown-item" href="crud.html">Черновики</a>
                     </div>
                 </li>
                 <li class="sidebar-item">
@@ -49,9 +49,9 @@
                         </div>
                     </div>
                     <div class="dropdown-content">
-                        <div class="dropdown-item">Архивные</div>
-                        <div class="dropdown-item">Опубликованые</div>
-                        <div class="dropdown-item">Черновики</div>
+                        <a class="dropdown-item" href="crud.html">Архивные</a><br>
+                        <a class="dropdown-item" href="crud.html">Опубликованые</a><br>
+                        <a class="dropdown-item" href="crud.html">Черновики</a>
                     </div>
                 </li>
                 <li class="sidebar-item">
@@ -64,14 +64,17 @@
                         </div>
                     </div>
                     <div class="dropdown-content">
-                        <div class="dropdown-item">Активные</div>
-                        <div class="dropdown-item">Не активные</div>
+                        <a class="dropdown-item" href="crud.html">Активные</a><br>
+                        <a class="dropdown-item" href="crud.html">Не активные</a>
                     </div>
                 </li>
             </ul>
-
-            <button class="edit-button" onclick="window.location.href='edit-page.html'"><i class="fas fa-edit"></i> Uz sakumlapU?</button>
+        
+            <button class="edit-button" onclick="window.location.href='ggg.html'">
+                <i class="fas fa-edit"></i> Rediģēt
+            </button>
         </aside>
+        
 
         <!--MОЖЕТ В ОТДЕЛЬНЫЙ ФАЙЛ -->
 
@@ -113,25 +116,52 @@
                 <div class="changes-section">
                     <div class="changes-info">
                         <i class="fas fa-poll-h"></i>
-                        <h2>Pēdējās izmaiņas</h2>
+                        <h2>5 Pēdējās izmaiņas</h2>
                     </div>
                     <div class="changes-table">
                         <table>
-                            <tr>
-                                <th>1</th>
-                                <th>2</th>
-                                <th>3</th>
-                                <th>4</th>
-                                <th>5</th>
-                            </tr>
-                            <tr>
-                                <td>12</td>
-                                <td>12</td>
-                                <td>12</td>
-                                <td>12</td>
-                                <td>12</td>
-                            </tr>
-                        </table>
+                            <thead>
+                                <tr>
+                                    <th>Objekts</th>
+                                    <th>Notikums</th>
+                                    <th>Datums</th>
+                                    <th>Lietotājs</th>
+                                </tr>
+                            </thead>
+                            <tbody id="changes-table-body">
+                                <!-- JS вставит сюда строки -->
+                                 <tr>
+                                    <td>Lorem ipsum dolor sit.</td>
+                                    <td>Lorem ipsum dolor sit.</td>
+                                    <td>Lorem ipsum dolor sit</td>
+                                    <td>Lorem ipsum dolor sit.</td>
+                                 </tr>
+                                 <tr>
+                                    <td>Lorem ipsum dolor sit.</td>
+                                    <td>Lorem ipsum dolor sit</td>
+                                    <td>Lorem ipsum dolor sit.</td>
+                                    <td>Lorem ipsum dolor sit</td>
+                                 </tr>
+                                 <tr>
+                                    <td>Lorem ipsum dolor sit</td>
+                                    <td>Lorem ipsum dolor sit</td>
+                                    <td>Lorem ipsum dolor sit.</td>
+                                    <td>Lorem ipsum dolor sit</td>
+                                 </tr>
+                                 <tr>
+                                    <td>Lorem ipsum dolor sit</td>
+                                    <td>Lorem ipsum dolor sit</td>
+                                    <td>Lorem ipsum dolor sit.</td>
+                                    <td>Lorem ipsum dolor sit</td>
+                                 </tr>
+                                 <tr>
+                                    <td>Lorem ipsum dolor sit</td>
+                                    <td>Lorem ipsum dolor sit</td>
+                                    <td>Lorem ipsum dolor sit</td>
+                                    <td>Lorem ipsum dolor sit.</td>
+                                 </tr>
+                            </tbody>
+                        </table>                        
                     </div>
                 </div>
                 <div class="chart-section">

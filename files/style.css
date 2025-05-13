@@ -62,6 +62,7 @@ body {
 
 .main-container {
     display: flex;
+    height: 100vh; 
 }
 
 /* === Sidebar === */
@@ -69,7 +70,7 @@ body {
     width: 400px;
     background-color: #e8edf2;
     padding: 20px 10px;
-    height: calc(100vh - 60px);
+    height: 100%;
     box-sizing: border-box;
     overflow-y: auto;
 }
@@ -147,16 +148,19 @@ body {
     padding: 10px 16px;
 }
 
-.dropdown-content .dropdown-item {
+.dropdown-content a.dropdown-item {
+    display: block;
     padding: 10px;
     margin: 5px 0;
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s;
     color: var(--text-dark);
+    text-decoration: none; /* убираем подчёркивание */
+    font-size: var(--font-size-base);
 }
 
-.dropdown-content .dropdown-item:hover {
+.dropdown-content a.dropdown-item:hover {
     background-color: var(--dark);
     color: white;
 }
@@ -238,11 +242,18 @@ body {
 
 .changes-section,
 .chart-section {
-    flex: 1;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.changes-section {
+    flex: 2;
+}
+
+.chart-section {
+    flex: 1;
 }
 
 .changes-section h2,
@@ -517,4 +528,5 @@ main {
     width: var(--d);
     background: conic-gradient( var(--main) calc(calc(var(--progress) / 100) * 360deg), transparent calc(calc(var(--progress) / 100) * 360deg));
   }
+
 
