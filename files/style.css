@@ -389,6 +389,124 @@ button#ielogot i {
     margin-right: 6px;
 }
 
+/*___________CRUD___________*/
+
+.table_header{
+    display: flex;
+}
+
+.table_header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    justify-content: center;
+    color: #333;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+
+/* Стили для сортировки */
+.sort-dropdown {
+    /*dropd по середине*/
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+    margin-left: auto;
+    background-color: var(--dark);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: var(--font-size-base);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.sort-dropdown label {
+    font-weight: bold;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sort-dropdown select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.sort-dropdown select:focus {
+    border-color: var(--main);
+    outline: none;
+}
+
+/* Таблица */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: var(--dark);
+    color: white;
+    text-align: left;
+}
+
+th, td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+tbody tr:hover {
+    background-color: #f0f9f5;
+}
+
+td img {
+    border-radius: 6px;
+}
+
+.action-buttons a {
+    margin-right: 8px;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: white;
+    border-radius: 4px;
+    font-size: var(--font-size-base);
+    transition: background-color 0.3s;
+}
+
+.btn-edit {
+    background-color: #3b82f6;
+}
+
+.btn-edit:hover {
+    background-color: #2563eb;
+}
+
+.btn-delete {
+    background-color: #ef4444;
+}
+
+.btn-delete:hover {
+    background-color: #dc2626;
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
 /*СТАТИЧНАЯ СТАТИСТИКА*/
 .progress-circle {
     margin-top: 10px;
@@ -399,3 +517,4 @@ button#ielogot i {
     width: var(--d);
     background: conic-gradient( var(--main) calc(calc(var(--progress) / 100) * 360deg), transparent calc(calc(var(--progress) / 100) * 360deg));
   }
+
