@@ -34,9 +34,9 @@
                         </div>
                     </div>
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="crud.html">Архивные</a>
-                        <a class="dropdown-item" href="crud.html">Опубликованые</a>
-                        <a class="dropdown-item" href="crud.html">Черновики</a>
+                        <a class="dropdown-item" href="crudJaunumi.html">Архивные</a><br>
+                        <a class="dropdown-item" href="crudJaunumi.html">Опубликованые</a><br>
+                        <a class="dropdown-item" href="crudJaunumi.html">Черновики</a>
                     </div>
                 </li>
                 <li class="sidebar-item">
@@ -49,9 +49,24 @@
                         </div>
                     </div>
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="crud.html">Архивные</a>
-                        <a class="dropdown-item" href="crud.html">Опубликованые</a>
-                        <a class="dropdown-item" href="crud.html">Черновики</a>
+                        <a class="dropdown-item" href="crudVakances.html">Архивные</a><br>
+                        <a class="dropdown-item" href="crudVakances.html">Опубликованые</a><br>
+                        <a class="dropdown-item" href="crudVakances.html">Черновики</a>
+                    </div>
+                </li>
+                <li class="sidebar-item">
+                    <div class="sidebar-header">
+                        <div class="sidebar-label">
+                            <i class="fas fa-briefcase"></i><span>Pieteikumi</span>
+                        </div>
+                        <div class="chevron-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="dropdown-content">
+                        <a class="dropdown-item" href="crudPieteikumi.html">Архивные</a><br>
+                        <a class="dropdown-item" href="crudPieteikumi.html">Опубликованые</a><br>
+                        <a class="dropdown-item" href="crudPieteikumi.html">Черновики</a>
                     </div>
                 </li>
                 <li class="sidebar-item">
@@ -64,8 +79,8 @@
                         </div>
                     </div>
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="crud.html">Активные</a>
-                        <a class="dropdown-item" href="crud.html">Не активные</a>
+                        <a class="dropdown-item" href="crudModeratori.html">Активные</a><br>
+                        <a class="dropdown-item" href="crudModeratori.html">Не активные</a>
                     </div>
                 </li>
             </ul>
@@ -73,12 +88,15 @@
             <button class="edit-button" onclick="window.location.href='ggg.html'">
                 <i class="fas fa-edit"></i> Rediģēt
             </button>
-        </aside>        
+            <button class="edit-button" onclick="window.location.href='ggg.html'">
+                <i class="fas fa-user"></i> Mans konts
+            </button>
+        </aside>      
 <!--MОЖЕТ В ОТДЕЛЬНЫЙ ФАЙЛ -->
 
     <main>
         <div class="table_header">
-            <h1><i class="fa-solid fa-list"></i> Sadaļas nosaukums</h1>
+            <h1><i class="fa-solid fa-list"></i> Jaunumi</h1>
             <div class="sort-dropdown">
                 <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
                 <select id="sort">
@@ -91,12 +109,11 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Nosaukums</th>
-                <th>Apraksts</th>
-                <th>Datums</th>
-                <th>Laiks</th>
+                <th>Text</th>
                 <th>Attēls</th>
+                <th>Publicēšanas datums</th>
+                <th>Statuss</th>
                 <th>Darbības</th>
             </tr>
         </thead>
@@ -109,8 +126,8 @@
                 <td>14:00</td>
                 <td><img src="attels.jpg" alt="Attēls" width="50"></td>
                 <td class="action-buttons">
-                    <a href="rediget.html?id=1" class="btn btn-edit">Rediģēt</a>
-                    <a href="dzest.html?id=1" class="btn btn-delete">Dzēst</a>
+                    <a href="rediget.html?id=1" class="btn btn-edit"><i class="fas fa-edit"></i> Rediģēt</a>
+                    <a href="dzest.html?id=1" class="btn btn-delete"><i class="fas fa-trash"></i> Dzēst</a>
                 </td>
             </tr>
         </tbody>
