@@ -33,7 +33,7 @@
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
-                    <div class="dropdown-content">
+                    <div class="dropdown-content activeS">
                         <a class="dropdown-item" href="crudJaunumi.html">Архивные</a><br>
                         <a class="dropdown-item" href="crudJaunumi.html">Опубликованые</a><br>
                         <a class="dropdown-item" href="crudJaunumi.html">Черновики</a>

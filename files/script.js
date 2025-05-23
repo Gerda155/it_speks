@@ -9,15 +9,9 @@ document.querySelectorAll('.sidebar-header').forEach(header => {
 
         item.classList.toggle('active');
     });
-}); // вкладки
+});
 
 if (window.history.replaceState) {
     window.history.replaceState(null, null, window.location.href);
-} //resubmition
+};
 
-document.querySelectorAll('.sidebar-header').forEach(header => {
-    header.addEventListener('click', () => {
-        const item = header.parentElement;
-        item.classList.toggle('active');
-    });
-});
