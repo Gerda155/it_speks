@@ -1,203 +1,105 @@
-<!DOCTYPE html>
-<html lang="lv">
+<?php
+require "../files/header.php";
+?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panelis</title>
-    <link rel="stylesheet" href="files/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <script src="files/script.js" defer></script>
-</head>
-
-<body>
-    <header class="topbar">
-        <div class="left-box">
-            <div class="logo">
-                <img src="files/ITsLogo.png" alt="Logo">
+<main class="dashboard">
+    <section class="stats-wrapper">
+        <div class="stats-info">
+            <i class="fas fa-chart-pie"></i>
+            <div class="stats-info-info">
+                <h2>Statistika</h2>
+                <p>Lorem, ipsum dolor.</p>
             </div>
-            <div class="admin-name">Vārds Uzvārds</div>
         </div>
-        <button class="logout-btn">Iziet</button>
-    </header>
-
-    <div class="main-container">
-        <aside class="sidebar">
-            <ul class="sidebar-list">
-                <li class="sidebar-item">
-                    <div class="sidebar-header">
-                        <div class="sidebar-label">
-                            <i class="fas fa-newspaper"></i><span>Jaunumi</span>
-                        </div>
-                        <div class="chevron-icon">
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                    </div>
-                    <div class="dropdown-content activeS">
-                        <a class="dropdown-item" href="crudJaunumi.html">Архивные</a><br>
-                        <a class="dropdown-item" href="crudJaunumi.html">Опубликованые</a><br>
-                        <a class="dropdown-item" href="crudJaunumi.html">Черновики</a>
-                    </div>
-                </li>
-                <li class="sidebar-item">
-                    <div class="sidebar-header">
-                        <div class="sidebar-label">
-                            <i class="fas fa-briefcase"></i><span>Vakances</span>
-                        </div>
-                        <div class="chevron-icon">
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                    </div>
-                    <div class="dropdown-content">
-                        <a class="dropdown-item" href="crudVakances.html">Архивные</a><br>
-                        <a class="dropdown-item" href="crudVakances.html">Опубликованые</a><br>
-                        <a class="dropdown-item" href="crudVakances.html">Черновики</a>
-                    </div>
-                </li>
-                <li class="sidebar-item">
-                    <div class="sidebar-header">
-                        <div class="sidebar-label">
-                            <i class="fas fa-briefcase"></i><span>Pieteikumi</span>
-                        </div>
-                        <div class="chevron-icon">
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                    </div>
-                    <div class="dropdown-content">
-                        <a class="dropdown-item" href="crudPieteikumi.html">Архивные</a><br>
-                        <a class="dropdown-item" href="crudPieteikumi.html">Опубликованые</a><br>
-                        <a class="dropdown-item" href="crudPieteikumi.html">Черновики</a>
-                    </div>
-                </li>
-                <li class="sidebar-item">
-                    <div class="sidebar-header">
-                        <div class="sidebar-label">
-                            <i class="fas fa-user-shield"></i><span>Moderatori</span>
-                        </div>
-                        <div class="chevron-icon">
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                    </div>
-                    <div class="dropdown-content">
-                        <a class="dropdown-item" href="crudModeratori.html">Активные</a><br>
-                        <a class="dropdown-item" href="crudModeratori.html">Не активные</a>
-                    </div>
-                    <div class="dropdown-content">
-                        <a class="dropdown-item" href="crudModeratori.html">Активные</a><br>
-                        <a class="dropdown-item" href="crudModeratori.html">Не активные</a>
-                    </div>
-                </li>
-            </ul>
-        
-            <button class="edit-button" onclick="window.location.href='ggg.html'">
-                <i class="fas fa-edit"></i> Rediģēt
-            </button>
-            <button class="edit-button" onclick="window.location.href='ggg.html'">
-                <i class="fas fa-user"></i> Mans konts
-            </button>
-        </aside>
-        
-
-        <!--MОЖЕТ В ОТДЕЛЬНЫЙ ФАЙЛ -->
-
-        <main class="dashboard">
-            <section class="stats-wrapper">
-                <div class="stats-info">
-                    <i class="fas fa-chart-pie"></i>
-                    <div class="stats-info-info">
-                        <h2>Statistika</h2>
-                        <p>Lorem, ipsum dolor.</p>
-                    </div>
+        <div class="stats-cards">
+            <div class="card">
+                <div class="card-info">
+                    <h3><i class="fas fa-chart-pie"></i> NOSAUKUMS</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur.</p>
                 </div>
-                <div class="stats-cards">
-                    <div class="card">
-                        <div class="card-info">
-                            <h3><i class="fas fa-chart-pie"></i> NOSAUKUMS</h3>
-                            <p>Lorem ipsum dolor sit amet consectetur.</p>
-                        </div>
-                        <div class="progress-circle"></div>
-                    </div>
-                    <div class="card">
-                        <div class="card-info">
-                            <h3><i class="fas fa-chart-pie"></i> NOSAUKUMS</h3>
-                            <p>Lorem ipsum dolor sit amet consectetur.</p>
-                        </div>
-                        <div class="progress-circle"></div>
-                    </div>
-                    <div class="card">
-                        <div class="card-info">
-                            <h3><i class="fas fa-chart-pie"></i> NOSAUKUMS</h3>
-                            <p>Lorem ipsum dolor sit amet consectetur.</p>
-                        </div>
-                        <div class="progress-circle"></div>
-                    </div>
+                <div class="progress-circle"></div>
+            </div>
+            <div class="card">
+                <div class="card-info">
+                    <h3><i class="fas fa-chart-pie"></i> NOSAUKUMS</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur.</p>
                 </div>
-            </section>
+                <div class="progress-circle"></div>
+            </div>
+            <div class="card">
+                <div class="card-info">
+                    <h3><i class="fas fa-chart-pie"></i> NOSAUKUMS</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur.</p>
+                </div>
+                <div class="progress-circle"></div>
+            </div>
+        </div>
+    </section>
 
-            <section class="bottom-sections">
-                <div class="changes-section">
-                    <div class="changes-info">
-                        <i class="fas fa-poll-h"></i>
-                        <h2>5 Pēdējās izmaiņas</h2>
-                    </div>
-                    <div class="changes-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Objekts</th>
-                                    <th>Notikums</th>
-                                    <th>Datums</th>
-                                    <th>Lietotājs</th>
-                                </tr>
-                            </thead>
-                            <tbody id="changes-table-body">
-                                <!-- JS вставит сюда строки -->
-                                 <tr>
-                                    <td>Lorem ipsum dolor sit.</td>
-                                    <td>Lorem ipsum dolor sit.</td>
-                                    <td>Lorem ipsum dolor sit</td>
-                                    <td>Lorem ipsum dolor sit.</td>
-                                 </tr>
-                                 <tr>
-                                    <td>Lorem ipsum dolor sit.</td>
-                                    <td>Lorem ipsum dolor sit</td>
-                                    <td>Lorem ipsum dolor sit.</td>
-                                    <td>Lorem ipsum dolor sit</td>
-                                 </tr>
-                                 <tr>
-                                    <td>Lorem ipsum dolor sit</td>
-                                    <td>Lorem ipsum dolor sit</td>
-                                    <td>Lorem ipsum dolor sit.</td>
-                                    <td>Lorem ipsum dolor sit</td>
-                                 </tr>
-                                 <tr>
-                                    <td>Lorem ipsum dolor sit</td>
-                                    <td>Lorem ipsum dolor sit</td>
-                                    <td>Lorem ipsum dolor sit.</td>
-                                    <td>Lorem ipsum dolor sit</td>
-                                 </tr>
-                                 <tr>
-                                    <td>Lorem ipsum dolor sit</td>
-                                    <td>Lorem ipsum dolor sit</td>
-                                    <td>Lorem ipsum dolor sit</td>
-                                    <td>Lorem ipsum dolor sit.</td>
-                                 </tr>
-                            </tbody>
-                        </table>                        
-                    </div>
-                </div>
-                <div class="chart-section">
-                    <div class="changes-info">
-                        <i class="fas fa-chart-line"></i>
-                        <h2>Aktivitātes diagramma</h2>
-                    </div>
-                    <div class="chart">
-                        <!-- График -->
-                    </div>
-                </div>
-            </section>
-        </main>
-    </div>
+    <section class="bottom-sections">
+        <div class="changes-section">
+            <div class="changes-info">
+                <i class="fas fa-poll-h"></i>
+                <h2>5 Pēdējās izmaiņas</h2>
+            </div>
+            <div class="changes-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Objekts</th>
+                            <th>Notikums</th>
+                            <th>Datums</th>
+                            <th>Lietotājs</th>
+                        </tr>
+                    </thead>
+                    <tbody id="changes-table-body">
+                        <!-- JS вставит сюда строки -->
+                        <tr>
+                            <td>Lorem ipsum dolor sit.</td>
+                            <td>Lorem ipsum dolor sit.</td>
+                            <td>Lorem ipsum dolor sit</td>
+                            <td>Lorem ipsum dolor sit.</td>
+                        </tr>
+                        <tr>
+                            <td>Lorem ipsum dolor sit.</td>
+                            <td>Lorem ipsum dolor sit</td>
+                            <td>Lorem ipsum dolor sit.</td>
+                            <td>Lorem ipsum dolor sit</td>
+                        </tr>
+                        <tr>
+                            <td>Lorem ipsum dolor sit</td>
+                            <td>Lorem ipsum dolor sit</td>
+                            <td>Lorem ipsum dolor sit.</td>
+                            <td>Lorem ipsum dolor sit</td>
+                        </tr>
+                        <tr>
+                            <td>Lorem ipsum dolor sit</td>
+                            <td>Lorem ipsum dolor sit</td>
+                            <td>Lorem ipsum dolor sit.</td>
+                            <td>Lorem ipsum dolor sit</td>
+                        </tr>
+                        <tr>
+                            <td>Lorem ipsum dolor sit</td>
+                            <td>Lorem ipsum dolor sit</td>
+                            <td>Lorem ipsum dolor sit</td>
+                            <td>Lorem ipsum dolor sit.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="chart-section">
+            <div class="changes-info">
+                <i class="fas fa-chart-line"></i>
+                <h2>Aktivitātes diagramma</h2>
+            </div>
+            <div class="chart">
+                <!-- График -->
+            </div>
+        </div>
+    </section>
+</main>
+</div>
 </body>
 
 </html>

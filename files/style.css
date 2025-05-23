@@ -9,8 +9,11 @@
     --font-size-icon: 24px;
 }
 
-body {
+html, body {
     margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
     font-family: sans-serif;
     background-color: #f4f6f8;
     font-size: var(--font-size-base);
@@ -18,12 +21,18 @@ body {
 }
 
 .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
     background-color: #fff;
-    padding: 10px 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1000;
 }
 
 .left-box {
@@ -32,20 +41,31 @@ body {
     gap: 150px;
 }
 
+.logo {
+    flex: 0 0 auto;
+}
+
 .logo img {
-    width: 250px;
+    width: 225px;
 }
 
 .admin-name {
+    position: absolute;
+    left: 27%;
+    transform: translateX(-50%);
     font-weight: bold;
     background-color: #eef1f5;
     padding: 10px 20px;
     border-radius: 8px;
     white-space: nowrap;
     font-size: var(--font-size-large);
+    pointer-events: none; 
 }
 
 .logout-btn {
+    position: absolute;
+    flex: 0 0 auto;
+    right: 5rem;
     padding: 10px 18px;
     cursor: pointer;
     background-color: var(--main);
@@ -54,6 +74,7 @@ body {
     color: white;
     font-size: var(--font-size-base);
     transition: background-color 0.3s;
+    z-index: 1; /* чтобы быть выше логотипа */
 }
 
 .logout-btn:hover {
@@ -62,23 +83,34 @@ body {
 
 .main-container {
     display: flex;
-    height: 100vh; 
+    min-height: calc(100vh - 100px); /* учитываем topbar */
+    margin-left: 400px; 
+    padding-top: 100px;  
+    box-sizing: border-box;
+    overflow: hidden; /* запретить прокрутку тут */
+    flex-direction: column;
 }
 
 /* === Sidebar === */
 .sidebar {
+    position: fixed;
+    top: 100px;
+    left: 0;
     width: 400px;
+    height: calc(100vh - 100px);
     background-color: #e8edf2;
-    padding: 20px 10px;
-    height: 100%;
-    box-sizing: border-box;
     overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    z-index: 999;
+    padding: 20px 10px;
+    box-sizing: border-box;
 }
 
 .sidebar-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    flex-grow: 1;
 }
 
 .sidebar-item {
@@ -167,13 +199,17 @@ body {
 
 /* === Контент === */
 .dashboard {
-    flex: 1;
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 20px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
     padding: 20px;
-    font-size: var(--font-size-base);
-}
-
-.dashboard h2{
-    font-size: var(--font-size-large);
+    box-sizing: border-box;
+    overflow: visible; /* чтобы не было прокрутки */
 }
 
 /* Статистика */
@@ -203,10 +239,10 @@ body {
 }
 
 .stats-wrapper {
+    grid-column: 1 / 4; 
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
-    margin-bottom: 20px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
@@ -226,8 +262,18 @@ body {
 
 /* Нижняя секция: изменения + график */
 .bottom-sections {
-    display: flex;
+    grid-column: 1 / 4;
+    display: flex; /* или grid, чтобы высоты синхронизировать */
     gap: 20px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.stats-wrapper,
+.bottom-sections {
+    width: 100%;
+    max-width: 1300px; 
 }
 
 .changes-info{
@@ -240,20 +286,20 @@ body {
     color: var(--main);
 }
 
-.changes-section,
-.chart-section {
+.changes-section {
+    grid-column: 1 / 2;
     background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-.changes-section {
-    flex: 2;
-}
-
 .chart-section {
-    flex: 1;
+    grid-column: 2 / 3;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .changes-section h2,
@@ -264,7 +310,6 @@ body {
 
 /* Кнопка редактировать */
 .edit-button {
-    margin-top: 30px;
     display: block;
     width: 100%;
     background-color: var(--main);
@@ -276,6 +321,7 @@ body {
     font-size: var(--font-size-base);
     cursor: pointer;
     transition: background-color 0.3s;
+    margin-top: 10px;
 }
 
 .edit-button:hover {
@@ -411,9 +457,9 @@ button#ielogot i {
     font-weight: 700;
     text-align: center;
     justify-content: center;
-    color: #333;
+    color: #fff;
     letter-spacing: 1px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
 }
 
 
@@ -519,37 +565,69 @@ main {
 }
 
 /*________РЕДАКТИРОВАТЬ АККАУНТ___________*/
-
 .dashboard-title {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 20px;
+    text-align: center;
+    font-size: 35px; 
+    font-weight: 900; 
+    margin-bottom: 5px;
+    color: #fff; 
+    letter-spacing: 2px; 
 }
 
+
 .form-card {
+    width: 100%;
+    max-width: 1000px;
     background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    max-width: 700px;
-    margin: 0 auto;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    max-width: 1000px;
+    margin: 40px auto;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px 40px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
 }
 
 .form-group label {
-    display: block;
+    margin-bottom: 8px;
     font-size: 18px;
-    font-weight: 500;
-    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--text-dark);
 }
 
 .form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: 10px 14px;
+.form-group textarea,
+.form-group select {
+    padding: 12px 16px;
     font-size: 16px;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #ccc;
-    background-color: #f9f9f9;
+    background-color: #f9fbfd;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    width: 95%;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--main);
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.2);
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
 }
 
 .form-group input:disabled {
@@ -557,8 +635,9 @@ main {
     color: #555;
 }
 
-textarea {
-    resize: vertical;
+.form-two-columns .form-button {
+    grid-column: span 2;
+    margin-top: 20px;
 }
 
 .small-button {
@@ -567,6 +646,28 @@ textarea {
     border-radius: 8px;
     margin-top: 20px;
 }
+
+
+/*_________FOOTER___________*/
+.footer {
+    background-color: var(--dark);
+    color: white;
+    text-align: center;
+    padding: 15px 20px;
+    font-size: 14px;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+    width: 100vw; 
+    max-width: 100%; 
+    box-sizing: border-box; 
+}
+
+.footer-content p {
+    margin: 0;
+    line-height: 1.4;
+}
+
 
 /*СТАТИЧНАЯ СТАТИСТИКА*/
 .progress-circle {
@@ -578,5 +679,3 @@ textarea {
     width: var(--d);
     background: conic-gradient( var(--main) calc(calc(var(--progress) / 100) * 360deg), transparent calc(calc(var(--progress) / 100) * 360deg));
   }
-
-
