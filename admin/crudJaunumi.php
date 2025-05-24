@@ -13,20 +13,11 @@ if (isset($_GET['status'])) {
     $status = mysqli_real_escape_string($savienojums, $_GET['status']);
     $statusFilter = "WHERE Statuss = '$status'";
 
-    // Название в заголовке в зависимости от статуса
     switch ($status) {
-        case 'Neaktivs':
-            $statusName = "Arhivētie jaunumi";
-            break;
-        case 'Melnraksts':
-            $statusName = "Melnraksti";
-            break;
-        case 'Aktīvs':
-            $statusName = "Publicētie jaunumi";
-            break;
-        default:
-            $statusName = "Jaunumi";
-            break;
+        case 'Neaktivs': $statusName = "Arhivētie jaunumi"; break;
+        case 'Melnraksts': $statusName = "Melnraksti"; break;
+        case 'Aktīvs': $statusName = "Publicētie jaunumi"; break;
+        default: $statusName = "Jaunumi"; break;
     }
 } else {
     $statusName = "Visi jaunumi";
@@ -43,9 +34,24 @@ $allowedSortFields = [
 $sortParam = $_GET['sort'] ?? 'id';
 $sortField = $allowedSortFields[$sortParam] ?? 'Jaunumi_ID';
 
-// Формируем один запрос с фильтром и сортировкой вместе
-$vaicajums = "SELECT * FROM it_speks_Jaunumi $statusFilter ORDER BY $sortField DESC";
+// Пагинация
+$recordsPerPage = 6;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
+    ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $recordsPerPage;
 
+// Считаем общее количество записей (для пагинации)
+$countQuery = "SELECT COUNT(*) as total FROM it_speks_Jaunumi $statusFilter";
+$countResult = mysqli_query($savienojums, $countQuery);
+$totalRecords = 0;
+if ($countResult) {
+    $row = mysqli_fetch_assoc($countResult);
+    $totalRecords = (int)$row['total'];
+}
+$totalPages = ceil($totalRecords / $recordsPerPage);
+
+// Основной запрос с лимитом и оффсетом
+$vaicajums = "SELECT * FROM it_speks_Jaunumi $statusFilter ORDER BY $sortField DESC LIMIT $recordsPerPage OFFSET $offset";
 $rezultats = mysqli_query($savienojums, $vaicajums);
 ?>
 
@@ -53,6 +59,7 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
     <div class="table_header">
         <h1><i class="fa-solid fa-list"></i> <?= $statusName ?></h1>
         <div class="sort-dropdown">
+            <a href="pievienot.php" class='add-button' title="Pievienot jaunumu"><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort">
                 <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>
@@ -81,13 +88,8 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
                     echo "<td>" . htmlspecialchars($rinda['Nosaukums']) . "</td>";
                     echo "<td>" . htmlspecialchars($rinda['Text']) . "</td>";
 
-                    // Base64-картинка
                     $attels = $rinda['Bilde'] !== null ? base64_encode($rinda['Bilde']) : null;
-                    if ($attels) {
-                        echo "<td><i class='fa-solid fa-check'></i></td>";
-                    } else {
-                        echo "<td><i class='fa-solid fa-xmark'></i></td>";
-                    }
+                    echo "<td>" . ($attels ? "<i class='fa-solid fa-check'></i>" : "<i class='fa-solid fa-xmark'></i>") . "</td>";
 
                     echo "<td>" . htmlspecialchars($rinda['Publicesanas_datums']) . "</td>";
                     echo "<td class='action-buttons'><a href='rediget.php?id=" . $rinda['Jaunumi_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
@@ -101,6 +103,7 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
         </tbody>
     </table>
 </main>
+
 <?php
 require "../files/footer.php";
 ?>

@@ -470,6 +470,30 @@ button#ielogot i {
 
 /*___________CRUD___________*/
 
+/*______________PAGINATION________________--*/
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.pagination a {
+    padding: 6px 12px;
+    text-decoration: none;
+    border: 1px solid #ccc;
+    color: #fff;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination a.active,
+.pagination a:hover {
+    background-color: var(--dark);
+    color: #fff;
+}
+
 /* Стиль модального окна */
 .modal {
   position: fixed;
@@ -627,6 +651,23 @@ td img {
     border-radius: 4px;
     font-size: var(--font-size-base);
     transition: background-color 0.3s;
+}
+
+.add-button{
+    height: 100%;
+    width: 5rem;
+    text-decoration: none;
+    color: white;
+    border-radius: 4px;
+    font-size: var(--font-size-base);
+    transition: background-color 0.3s;
+    background-color: var(--dark);
+    display: flex;
+}
+
+.add-button i{
+    font-size: 3rem;
+    padding: 5px 0 0 5px;
 }
 
 .btn-edit {

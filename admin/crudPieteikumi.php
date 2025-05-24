@@ -30,7 +30,37 @@ $allowedSortFields = [
 $sortParam = $_GET['sort'] ?? 'id';
 $sortField = $allowedSortFields[$sortParam] ?? 'p.Pieteiksanas_ID';
 
-$vaicajums = "SELECT p.*, v.Amata_nosaukums FROM it_speks_Pieteiksanas p JOIN it_speks_Vakances v ON p.Vakances_ID = v.Vakances_ID $statusFilter ORDER BY $sortField DESC";
+// Пагинация
+$recordsPerPage = 6;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
+    ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $recordsPerPage;
+
+// Считаем общее количество
+$countQuery = "
+    SELECT COUNT(*) as total
+    FROM it_speks_Pieteiksanas p
+    JOIN it_speks_Vakances v ON p.Vakances_ID = v.Vakances_ID
+    $statusFilter
+";
+$countResult = mysqli_query($savienojums, $countQuery);
+$totalRecords = 0;
+if ($countResult) {
+    $row = mysqli_fetch_assoc($countResult);
+    $totalRecords = (int)$row['total'];
+}
+$totalPages = ceil($totalRecords / $recordsPerPage);
+
+// Основной запрос с лимитом и оффсетом
+$vaicajums = "
+    SELECT p.*, v.Amata_nosaukums
+    FROM it_speks_Pieteiksanas p
+    JOIN it_speks_Vakances v ON p.Vakances_ID = v.Vakances_ID
+    $statusFilter
+    ORDER BY $sortField DESC
+    LIMIT $recordsPerPage OFFSET $offset
+";
+
 $rezultats = mysqli_query($savienojums, $vaicajums);
 ?>
 
@@ -38,6 +68,7 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
     <div class="table_header">
         <h1><i class="fa-solid fa-list"></i> <?= $statusName ?></h1>
         <div class="sort-dropdown">
+            <a href="" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort" onchange="location.href='?sort=' + this.value + '<?= isset($_GET['status']) ? '&status=' . $_GET['status'] : '' ?>'">
                 <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>

@@ -7,26 +7,16 @@ if (isset($_GET['status'])) {
     $status = mysqli_real_escape_string($savienojums, $_GET['status']);
     $statusFilter = "WHERE Statuss = '$status'";
 
-    // Название в заголовке в зависимости от статуса
     switch ($status) {
-        case 'Neaktivs':
-            $statusName = "Arhivētas vakances";
-            break;
-        case 'Melnraksts':
-            $statusName = "Melnraksti";
-            break;
-        case 'Aktīvs':
-            $statusName = "Publicētas vakances";
-            break;
-        default:
-            $statusName = "Vakances";
-            break;
+        case 'Neaktivs': $statusName = "Arhivētas vakances"; break;
+        case 'Melnraksts': $statusName = "Melnraksti"; break;
+        case 'Aktīvs': $statusName = "Publicētas vakances"; break;
+        default: $statusName = "Vakances"; break;
     }
 } else {
     $statusName = "Visas vakances";
 }
 
-// Разрешённые поля для сортировки
 $allowedSortFields = [
     'id' => 'Vakances_ID',
     'name' => 'Nosaukums',
@@ -36,7 +26,31 @@ $allowedSortFields = [
 $sortParam = $_GET['sort'] ?? 'id';
 $sortField = $allowedSortFields[$sortParam] ?? 'Vakances_ID';
 
-$vaicajums = "SELECT * FROM it_speks_Vakances $statusFilter ORDER BY $sortField DESC";
+// Пагинация
+$recordsPerPage = 6;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
+    ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $recordsPerPage;
+
+// Считаем общее количество
+$countQuery = "SELECT COUNT(*) as total FROM it_speks_Vakances $statusFilter";
+$countResult = mysqli_query($savienojums, $countQuery);
+$totalRecords = 0;
+if ($countResult) {
+    $row = mysqli_fetch_assoc($countResult);
+    $totalRecords = (int)$row['total'];
+}
+$totalPages = ceil($totalRecords / $recordsPerPage);
+
+// Основной запрос с лимитом и оффсетом
+$vaicajums = "
+    SELECT *
+    FROM it_speks_Vakances
+    $statusFilter
+    ORDER BY $sortField DESC
+    LIMIT $recordsPerPage OFFSET $offset
+";
+
 $rezultats = mysqli_query($savienojums, $vaicajums);
 ?>
 
@@ -44,6 +58,7 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
     <div class="table_header">
         <h1><i class="fa-solid fa-list"></i> <?= $statusName ?></h1>
         <div class="sort-dropdown">
+            <a href="" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort">
                 <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>

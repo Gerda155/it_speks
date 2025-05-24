@@ -12,11 +12,9 @@ $allowedSortFields = [
     'date' => 'Izveides_datums'
 ];
 
-// Получаем параметр сортировки
 $sortParam = $_GET['sort'] ?? 'id';
 $sortField = $allowedSortFields[$sortParam] ?? 'Lietotaj_ID';
 
-// Получаем параметр фильтрации по статусу (необязательный)
 $statusParam = $_GET['status'] ?? '';
 $statusFilter = '';
 if (!empty($statusParam)) {
@@ -24,26 +22,41 @@ if (!empty($statusParam)) {
     $statusFilter = "AND Statuss = '$status'";
 }
 
-// Заголовок по умолчанию
 $title = "Visi moderatori";
-
 if (!empty($statusParam)) {
     switch ($statusParam) {
-        case 'Aktivs':
-            $title = "Aktīvie moderatori";
-            break;
-        case 'Neaktivs':
-            $title = "Neaktīvie moderatori";
-            break;
+        case 'Aktivs': $title = "Aktīvie moderatori"; break;
+        case 'Neaktivs': $title = "Neaktīvie moderatori"; break;
     }
 }
 
-// Финальный SQL-запрос
+// Пагинация
+$recordsPerPage = 6;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
+    ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $recordsPerPage;
+
+// Считаем общее количество
+$countQuery = "
+    SELECT COUNT(*) as total
+    FROM it_speks_Lietotaji
+    WHERE Loma = 'Moderators' $statusFilter
+";
+$countResult = mysqli_query($savienojums, $countQuery);
+$totalRecords = 0;
+if ($countResult) {
+    $row = mysqli_fetch_assoc($countResult);
+    $totalRecords = (int)$row['total'];
+}
+$totalPages = ceil($totalRecords / $recordsPerPage);
+
+// Основной запрос с лимитом и оффсетом
 $query = "
     SELECT Lietotaj_ID, Vards, Uzvards, Epasts, Lietotajvards, Izveides_datums, Statuss, Piezimes
     FROM it_speks_Lietotaji
     WHERE Loma = 'Moderators' $statusFilter
     ORDER BY $sortField DESC
+    LIMIT $recordsPerPage OFFSET $offset
 ";
 
 $result = mysqli_query($savienojums, $query);
@@ -53,6 +66,7 @@ $result = mysqli_query($savienojums, $query);
     <div class="table_header">
         <h1><i class="fa-solid fa-list"></i> <?= htmlspecialchars($title) ?></h1>
         <div class="sort-dropdown">
+            <a href="" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort" onchange="location.href='?sort=' + this.value">
                 <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>
