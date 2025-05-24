@@ -20,8 +20,36 @@ document.getElementById('sort').addEventListener('change', function () {
     window.location.href = '?sort=' + selected;
 }); //сортировка
 
-document.getElementById('sort').addEventListener('change', function() {
+document.getElementById('sort').addEventListener('change', function () {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('sort', this.value);
     window.location.search = urlParams.toString();
 }); //страница с сортировкой
+
+/*______MODAL_________*/
+const modal = document.getElementById('deleteModal');
+const confirmBtn = document.getElementById('confirmDelete');
+const cancelBtn = document.getElementById('cancelDelete');
+let selectedId = null;
+
+document.querySelectorAll('.btn-delete').forEach(button => {
+    button.addEventListener('click', e => {
+        e.preventDefault();
+        selectedId = button.getAttribute('data-id');
+        modal.classList.remove('hidden');
+    });
+});
+
+confirmBtn.addEventListener('click', e => {
+    e.preventDefault();
+    if (selectedId) {
+        window.location.href = `dzest.php?id=${selectedId}`;
+    }
+});
+
+cancelBtn.addEventListener('click', e => {
+    e.preventDefault();
+    modal.classList.add('hidden');
+    selectedId = null;
+});
+

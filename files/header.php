@@ -59,7 +59,7 @@
                 <li class="sidebar-item">
                     <div class="sidebar-header">
                         <div class="sidebar-label">
-                            <i class="fas fa-briefcase"></i><span>Pieteikumi</span>
+                            <i class="fa-solid fa-file-pen"></i><span>Pieteikumi</span>
                         </div>
                         <div class="chevron-icon">
                             <i class="fas fa-chevron-down"></i>
@@ -88,9 +88,7 @@
                 </li>
             </ul>
             <div class="sidebar-buttons">
-                <button class="edit-button" onclick="window.location.href='index.php'">
-                    <i class="fas fa-edit"></i> Rediģēt
-                </button>
+                <button class="edit-button" onclick="window.location.href='index.php'">Sākumlapa</button>
                 <button class="edit-button" onclick="window.location.href='konts.php'">
                     <i class="fas fa-user"></i> Mans konts
                 </button>
