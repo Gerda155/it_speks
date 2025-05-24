@@ -1,5 +1,5 @@
 <footer class="footer">
-    <div class="footer-content">
-        <p>© 2025 IT spēks SIA. Visi tiesības aizsargātas.</p>
-    </div>
+    © 2025 IT spēks. Visas tiesības aizsargātas.
 </footer>
+</body>
+</html>

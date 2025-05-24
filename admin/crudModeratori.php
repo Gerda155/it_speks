@@ -97,3 +97,6 @@ $result = mysqli_query($savienojums, $query);
         </tbody>
     </table>
 </main>
+<?php
+require "../files/footer.php";
+?>

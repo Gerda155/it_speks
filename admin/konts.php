@@ -65,6 +65,6 @@ require "../files/header.php";
         </form>
     </div>
 </div>
-</body>
-
-</html>
+<?php
+require "../files/footer.php";
+?>

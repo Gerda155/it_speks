@@ -101,3 +101,6 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
         </tbody>
     </table>
 </main>
+<?php
+require "../files/footer.php";
+?>

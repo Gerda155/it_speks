@@ -209,17 +209,9 @@ html, body {
 
 /* === Контент === */
 .dashboard {
-    flex: 1 1 auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto auto;
-    gap: 20px;
+    max-width: 1350px; 
     width: 100%;
-    max-width: 1300px;
     margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow: visible; /* чтобы не было прокрутки */
 }
 
 /* Статистика */
@@ -272,18 +264,16 @@ html, body {
 
 /* Нижняя секция: изменения + график */
 .bottom-sections {
-    grid-column: 1 / 4;
-    display: flex; /* или grid, чтобы высоты синхронизировать */
+    display: grid;
     gap: 20px;
-    width: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
+    box-sizing: border-box;
+    margin-top: 2rem;
+    grid-template-columns: 1fr 1fr;
 }
 
 .stats-wrapper,
 .bottom-sections {
-    width: 100%;
-    max-width: 1300px; 
+    max-width: 1350px; 
 }
 
 .changes-info{
@@ -318,6 +308,30 @@ html, body {
     color: var(--text-dark);
 }
 
+/*________Динамические данные__________*/
+.circular-chart {
+    width: 120px;
+    height: 120px;
+    margin-left: 3rem;
+}
+.circle-bg {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 3.8;
+}
+.circle {
+    fill: none;
+    stroke-width: 4;
+    stroke: var(--dark);
+    stroke-linecap: round;
+    animation: progress 1s ease-out forwards;
+}
+.percentage {
+    fill: #666;
+    font-size: 0.5em;
+    text-anchor: middle;
+}
+
 /* Кнопка редактировать */
 .edit-button {
     display: block;
@@ -342,8 +356,6 @@ html, body {
     margin-right: 8px;
     font-size: var(--font-size-icon);
 }
-
-
 
 /*ВХОД ДЛЯ АДМИНОВ*/
 /* Фон всей страницы */
@@ -664,28 +676,9 @@ textarea {
     color: white;
     text-align: center;
     padding: 15px 20px;
-    font-size: 14px;
-    width: 100%;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
-    z-index: 1000;
-    width: 100vw; 
-    max-width: 100%; 
-    box-sizing: border-box; 
+    font-size: var(--font-size-base);
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    user-select: none;
+    margin-top: 2.5rem;
 }
 
-.footer-content p {
-    margin: 0;
-    line-height: 1.4;
-}
-
-
-/*СТАТИЧНАЯ СТАТИСТИКА*/
-.progress-circle {
-    margin-top: 10px;
-    --d: 100px;
-    --progress: 40;
-    border-radius: var(--d);
-    height: var(--d);
-    width: var(--d);
-    background: conic-gradient( var(--main) calc(calc(var(--progress) / 100) * 360deg), transparent calc(calc(var(--progress) / 100) * 360deg));
-  }
