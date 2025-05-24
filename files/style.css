@@ -93,6 +93,9 @@ html, body {
 
 /* === Sidebar === */
 .sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10px;
     position: fixed;
     top: 100px;
     left: 0;
@@ -111,6 +114,12 @@ html, body {
     padding: 0;
     margin: 0;
     flex-grow: 1;
+    overflow-y: auto; 
+}
+
+.sidebar-buttons {
+    /* контейнер для кнопок */
+    margin-top: auto; /* толкает вниз */
 }
 
 .sidebar-item {
@@ -176,8 +185,9 @@ html, body {
 }
 
 .sidebar-item.active .dropdown-content {
-    max-height: 200px;
+    max-height: none; 
     padding: 10px 16px;
+    overflow: visible;
 }
 
 .dropdown-content a.dropdown-item {
@@ -542,11 +552,11 @@ td img {
 }
 
 .btn-edit {
-    background-color: #3b82f6;
+    background-color: var(--dark);
 }
 
 .btn-edit:hover {
-    background-color: #2563eb;
+    background-color: var(--main);
 }
 
 .btn-delete {

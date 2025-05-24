@@ -9,9 +9,19 @@ document.querySelectorAll('.sidebar-header').forEach(header => {
 
         item.classList.toggle('active');
     });
-});
+}); //Боковая панель
 
 if (window.history.replaceState) {
     window.history.replaceState(null, null, window.location.href);
-};
+}; //Рефреш
 
+document.getElementById('sort').addEventListener('change', function () {
+    const selected = this.value;
+    window.location.href = '?sort=' + selected;
+}); //сортировка
+
+document.getElementById('sort').addEventListener('change', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('sort', this.value);
+    window.location.search = urlParams.toString();
+}); //страница с сортировкой

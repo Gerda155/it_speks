@@ -1,51 +1,101 @@
 <?php
 require "../files/header.php";
+require "../files/database.php";
+
+$statusFilter = "";
+if (isset($_GET['status'])) {
+    $status = mysqli_real_escape_string($savienojums, $_GET['status']);
+    $statusFilter = "WHERE Statuss = '$status'";
+
+    // Название в заголовке в зависимости от статуса
+    switch ($status) {
+        case 'Neaktivs':
+            $statusName = "Arhivētas vakances";
+            break;
+        case 'Melnraksts':
+            $statusName = "Melnraksti";
+            break;
+        case 'Aktīvs':
+            $statusName = "Publicētas vakances";
+            break;
+        default:
+            $statusName = "Vakances";
+            break;
+    }
+} else {
+    $statusName = "Visas vakances";
+}
+
+// Разрешённые поля для сортировки
+$allowedSortFields = [
+    'id' => 'Vakances_ID',
+    'name' => 'Nosaukums',
+    'date' => 'Publicesanas_datums'
+];
+
+$sortParam = $_GET['sort'] ?? 'id';
+$sortField = $allowedSortFields[$sortParam] ?? 'Vakances_ID';
+
+$vaicajums = "SELECT * FROM it_speks_Vakances $statusFilter ORDER BY $sortField DESC";
+$rezultats = mysqli_query($savienojums, $vaicajums);
 ?>
+
 <main>
     <div class="table_header">
-        <h1><i class="fa-solid fa-list"></i> Vakances</h1>
+        <h1><i class="fa-solid fa-list"></i> <?= $statusName ?></h1>
         <div class="sort-dropdown">
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort">
-                <option value="id">ID</option>
-                <option value="name">Nosaukums</option>
-                <option value="date">Datums</option>
+                <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>
+                <option value="name" <?= $sortParam === 'name' ? 'selected' : '' ?>>Nosaukums</option>
+                <option value="date" <?= $sortParam === 'date' ? 'selected' : '' ?>>Datums</option>
             </select>
         </div>
     </div>
+
     <table>
         <thead>
             <tr>
-                <th>Amats</th>
-                <th>Uzņēmums</th>
-                <th>Atrašānās vieta</th>
+                <th>Nosaukums</th>
+                <th>Uzņemums</th>
+                <th>Pilsēta</th>
                 <th>Alga</th>
                 <th>Prasības</th>
                 <th>Apraksts</th>
                 <th>Publicēšanas datums</th>
-                <th>Statuss</th>
-                <th>Beigu datums</th>
                 <th>Tips</th>
-                <th>Attēls</th>
-                <th>Darbības</th>
+                <th>Bilde</th>
+                <th>Rediģēt</th>
+                <th>Dzēst</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>1</td>
-                <td>Nosaukums A</td>
-                <td>Apraksts A</td>
-                <td>2025-05-13</td>
-                <td>14:00</td>
-                <td><img src="attels.jpg" alt="Attēls" width="50"></td>
-                <td class="action-buttons">
-                    <a href="rediget.html?id=1" class="btn btn-edit"><i class="fas fa-edit"></i> Rediģēt</a>
-                    <a href="dzest.html?id=1" class="btn btn-delete"><i class="fas fa-trash"></i> Dzēst</a>
-                </td>
-            </tr>
+            <?php
+            if (mysqli_num_rows($rezultats) > 0) {
+                while ($row = mysqli_fetch_assoc($rezultats)) {
+                    echo "<tr>";
+                    echo "<td>" . htmlspecialchars($row['Amata_nosaukums']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Uznemuma_nosaukums']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Atrasanas_vieta']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Alga']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Prasibas']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Darba_apraksts']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Publicesanas_datums']) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Tips']) . "</td>";
+                    $attels = $rinda['Bilde'] !== null ? base64_encode($rinda['Bilde']) : null;
+                    if ($attels) {
+                        echo "<td><i class='fa-solid fa-check'></i></td>";
+                    } else {
+                        echo "<td><i class='fa-solid fa-xmark'></i></td>";
+                    }
+                    echo "<td class='action-buttons'><a href='redigetVakances.php?id=" . $row['Vakances_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='dzestVakances.php?id=" . $row['Vakances_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='6'>Nav pievienotu vakances.</td></tr>";
+            }
+            ?>
         </tbody>
     </table>
 </main>
-</body>
-
-</html>
