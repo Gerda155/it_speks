@@ -1,3 +1,30 @@
+<?php
+session_start();
+if (!isset($_SESSION['lietotajvards'])) {
+    header("Location: login.php");
+    exit();
+}
+
+require "../files/database.php"; // подключаем базу
+
+$lietotajvards = $_SESSION['lietotajvards'];
+
+$sql = "SELECT Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?";
+$stmt = mysqli_prepare($savienojums, $sql);
+mysqli_stmt_bind_param($stmt, "s", $lietotajvards);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+if ($result && mysqli_num_rows($result) === 1) {
+    $user = mysqli_fetch_assoc($result);
+    $vards = htmlspecialchars($user['Vards']);
+    $uzvards = htmlspecialchars($user['Uzvards']);
+} else {
+    $vards = "Nezināms";
+    $uzvards = "Lietotājs";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="lv">
 
@@ -17,10 +44,10 @@
                 <img src="../files/ITsLogo.png" alt="Logo">
             </div>
             <div class="admin-name">
-                Vārds Uzvārds
+                <?= $vards . ' ' . $uzvards ?>
             </div>
         </div>
-        <button class="logout-btn">Iziet</button>
+        <button class="logout-btn" id="logoutBtn">Iziet</button>
     </header>
 
     <div class="main-container">
@@ -94,3 +121,14 @@
                 </button>
             </div>
         </aside>
+
+        <!-- Модалка выхода -->
+        <div id="logoutModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+            <div style="background:#fff; padding:20px; border-radius:8px; max-width:320px; width:90%; text-align:center;">
+                <h2>Vai tiešām vēlies iziet no konta?</h2>
+                <div style="margin-top:20px;">
+                    <button id="confirmLogout" style="margin-right:10px; padding:8px 16px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;">Jā, iziet</button>
+                    <button id="cancelLogout" style="padding:8px 16px; background:#999; color:#fff; border:none; border-radius:4px; cursor:pointer;">Atcelt</button>
+                </div>
+            </div>
+        </div>

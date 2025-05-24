@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+if (!isset($_SESSION['lietotajvards'])) {
+    header("Location: login.php"); 
+    exit();
+}
+
 require "../files/header.php";
 ?>
 

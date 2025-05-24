@@ -53,3 +53,16 @@ cancelBtn.addEventListener('click', e => {
     selectedId = null;
 });
 
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  document.getElementById('logoutModal').style.display = 'flex';
+});
+
+document.getElementById('cancelLogout').addEventListener('click', () => {
+  document.getElementById('logoutModal').style.display = 'none';
+});
+
+document.getElementById('confirmLogout').addEventListener('click', () => {
+  window.location.href = 'logout.php';
+});
+
