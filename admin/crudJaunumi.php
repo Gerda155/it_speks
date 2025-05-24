@@ -92,8 +92,8 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
                     echo "<td>" . ($attels ? "<i class='fa-solid fa-check'></i>" : "<i class='fa-solid fa-xmark'></i>") . "</td>";
 
                     echo "<td>" . htmlspecialchars($rinda['Publicesanas_datums']) . "</td>";
-                    echo "<td class='action-buttons'><a href='rediget.php?id=" . $rinda['Jaunumi_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
-                    echo "<td class='action-buttons'><a href='dzest.php?id=" . $rinda['Jaunumi_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='regJaunumi.php?id=" . $rinda['Jaunumi_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='regJaunumi?id=" . $rinda['Jaunumi_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
                     echo "</tr>";
                 }
             } else {

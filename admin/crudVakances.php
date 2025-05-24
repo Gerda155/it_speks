@@ -103,8 +103,8 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
                     } else {
                         echo "<td><i class='fa-solid fa-xmark'></i></td>";
                     }
-                    echo "<td class='action-buttons'><a href='redigetVakances.php?id=" . $row['Vakances_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
-                    echo "<td class='action-buttons'><a href='dzestVakances.php?id=" . $row['Vakances_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='regVakances.php?id=" . $row['Vakances_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='regVakances.php?id=" . $row['Vakances_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
                     echo "</tr>";
                 }
             } else {

@@ -100,8 +100,8 @@ $result = mysqli_query($savienojums, $query);
                     echo "<td>" . htmlspecialchars($row['Lietotajvards'] ?? '') . "</td>";
                     echo "<td>" . htmlspecialchars($row['Izveides_datums'] ?? '') . "</td>";
                     echo "<td>" . htmlspecialchars($row['Piezimes'] ?? '') . "</td>";
-                    echo "<td class='action-buttons'><a href='redigetLietotaju.php?id=" . $row['Lietotaj_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
-                    echo "<td class='action-buttons'><a href='dzestLietotaju.php?id=" . $row['Lietotaj_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='regModeratori.php?id=" . $row['Lietotaj_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='regModeratori.php?id=" . $row['Lietotaj_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
                     echo "</tr>";
                 }
             } else {

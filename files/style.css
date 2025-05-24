@@ -376,7 +376,6 @@ body, html {
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(4px);
-    background-color: rgba(0, 0, 0, 0.4); 
 }
 
 /* Блок с формой */
@@ -388,6 +387,10 @@ body, html {
     width: 90%;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     text-align: center;
+}
+
+.form-grid-card .login-box{
+    margin-left: 5rem;
 }
 
 /* Заголовок и текст */
@@ -410,8 +413,17 @@ form {
     gap: 18px;
 }
 
+.center{
+    margin-left: 19rem;
+}
+
 input[type="text"],
-input[type="password"] {
+textarea,
+select,
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="date"] {
     padding: 12px 16px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -424,7 +436,7 @@ input:focus {
 }
 
 /* Кнопка входа */
-button#ielogot {
+.ielogot {
     background-color: var(--main);
     color: white;
     border: none;
@@ -435,11 +447,11 @@ button#ielogot {
     transition: background-color 0.3s;
 }
 
-button#ielogot:hover {
+.ielogot:hover {
     background-color: var(--dark);
 }
 
-button#ielogot i {
+.ielogot i {
     margin-right: 6px;
 }
 
@@ -469,6 +481,7 @@ button#ielogot i {
 }
 
 /*___________CRUD___________*/
+
 
 /*______________PAGINATION________________--*/
 .pagination {
@@ -719,6 +732,11 @@ main {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 30px 40px;
+}
+
+.form-grid-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .form-group {
