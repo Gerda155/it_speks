@@ -31,7 +31,7 @@ $sortParam = $_GET['sort'] ?? 'id';
 $sortField = $allowedSortFields[$sortParam] ?? 'p.Pieteiksanas_ID';
 
 // Пагинация
-$recordsPerPage = 6;
+$recordsPerPage = 7;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
     ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $recordsPerPage;
@@ -68,7 +68,7 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
     <div class="table_header">
         <h1><i class="fa-solid fa-list"></i> <?= $statusName ?></h1>
         <div class="sort-dropdown">
-            <a href="" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
+            <a href="regPieteikumi.php" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort" onchange="location.href='?sort=' + this.value + '<?= isset($_GET['status']) ? '&status=' . $_GET['status'] : '' ?>'">
                 <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>
@@ -121,5 +121,6 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
     </table>
 </main>
 <?php
+require "../files/crud.php";
 require "../files/footer.php";
 ?>

@@ -31,7 +31,7 @@ if (!empty($statusParam)) {
 }
 
 // Пагинация
-$recordsPerPage = 6;
+$recordsPerPage = 7;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
     ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $recordsPerPage;
@@ -66,7 +66,7 @@ $result = mysqli_query($savienojums, $query);
     <div class="table_header">
         <h1><i class="fa-solid fa-list"></i> <?= htmlspecialchars($title) ?></h1>
         <div class="sort-dropdown">
-            <a href="" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
+            <a href="regModeratori.php" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort" onchange="location.href='?sort=' + this.value">
                 <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>
@@ -112,5 +112,6 @@ $result = mysqli_query($savienojums, $query);
     </table>
 </main>
 <?php
+require "../files/crud.php";
 require "../files/footer.php";
 ?>
