@@ -132,3 +132,17 @@ if ($result && mysqli_num_rows($result) === 1) {
                 </div>
             </div>
         </div>
+
+        <script>
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                document.getElementById('logoutModal').style.display = 'flex';
+            });
+
+            document.getElementById('cancelLogout').addEventListener('click', () => {
+                document.getElementById('logoutModal').style.display = 'none';
+            });
+
+            document.getElementById('confirmLogout').addEventListener('click', () => {
+                window.location.href = '../admin/logout.php';
+            });
+        </script>

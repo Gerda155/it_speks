@@ -6,8 +6,25 @@ if (!isset($_SESSION['lietotajvards'])) {
     exit();
 }
 
+require "../files/database.php"; 
 require "../files/header.php";
+
+$username = $_SESSION['lietotajvards'];
+
+$sql = "SELECT Vards, Uzvards, Epasts, Lietotajvards, Talrunis, Izveides_datums, Statuss, Piezimes FROM it_speks_Lietotaji WHERE Lietotajvards = ?";
+$stmt = $savienojums->prepare($sql);
+$stmt->bind_param("s", $username);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    header("Location: login.php");
+    exit();
+}
+
+$user = $result->fetch_assoc();
 ?>
+
 
 <div class="dashboard">
     <h2 class="dashboard-title">Jūsu profils</h2>
@@ -17,42 +34,37 @@ require "../files/header.php";
             <div class="form-grid">
                 <div class="form-group">
                     <label for="name">Vārds:</label>
-                    <input type="text" id="name" name="name" value="Anna" required>
+                    <input type="text" id="name" name="name" value="<?= htmlspecialchars($user['Vards']) ?>" required>
                 </div>
 
                 <div class="form-group">
                     <label for="surname">Uzvārds:</label>
-                    <input type="text" id="surname" name="surname" value="Admina">
+                    <input type="text" id="surname" name="surname" value="<?= htmlspecialchars($user['Uzvards']) ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="email">E-pasts:</label>
-                    <input type="email" id="email" name="email" value="admin@example.com" required>
+                    <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['Epasts']) ?>" required>
                 </div>
 
                 <div class="form-group">
                     <label for="username">Lietotājvārds:</label>
-                    <input type="text" id="username" name="username" value="admin123">
+                    <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['Lietotajvards']) ?>" readonly>
                 </div>
 
                 <div class="form-group">
                     <label for="phone">Tālrunis:</label>
-                    <input type="tel" id="phone" name="phone" value="+37100000000">
+                    <input type="tel" id="phone" name="phone" value="<?= htmlspecialchars($user['Talrunis']) ?>">
                 </div>
 
                 <div class="form-group">
                     <label for="regdate">Reģistrēšanas datums:</label>
-                    <input type="text" id="regdate" name="regdate" value="2024-01-01" disabled>
+                    <input type="text" id="regdate" name="regdate" value="<?= htmlspecialchars($user['Izveides_datums']) ?>" disabled>
                 </div>
 
-                <div class="form-group">
-                    <label for="status">Statuss:</label>
-                    <input type="text" id="status" name="status" value="Aktīvs">
-                </div>
-
-                <div class="form-group">
+                <div class="form-group simts">
                     <label for="notes">Piezīmes:</label>
-                    <textarea id="notes" name="notes" rows="3">Nav piezīmju</textarea>
+                    <textarea id="notes" name="notes" rows="3"><?= htmlspecialchars($user['Piezimes']) ?></textarea>
                 </div>
 
                 <div class="form-group">
