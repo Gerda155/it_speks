@@ -2,15 +2,55 @@
 session_start();
 
 if (!isset($_SESSION['lietotajvards'])) {
-    header("Location: login.php"); 
+    header("Location: login.php");
     exit();
 }
 
-require "../files/database.php"; 
+require "../files/database.php";
 require "../files/header.php";
 
 $username = $_SESSION['lietotajvards'];
 
+$successMessage = "";
+$errorMessage = "";
+
+// Обработка формы
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = $_POST['name'] ?? '';
+    $surname = $_POST['surname'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $phone = $_POST['phone'] ?? '';
+    $notes = $_POST['notes'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm-password'] ?? '';
+
+    if ($password !== '') {
+        if ($password !== $confirm_password) {
+            $errorMessage = "Paroles nesakrīt!";
+        } else {
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            $sql = "UPDATE it_speks_Lietotaji SET Vards=?, Uzvards=?, Epasts=?, Talrunis=?, Piezimes=?, Parole=? WHERE Lietotajvards=?";
+            $stmt = $savienojums->prepare($sql);
+            $stmt->bind_param("sssssss", $name, $surname, $email, $phone, $notes, $passwordHash, $username);
+            if ($stmt->execute()) {
+                $successMessage = "Profils veiksmīgi atjaunināts!";
+            } else {
+                $errorMessage = "Kļūda datubāzē.";
+            }
+        }
+    } else {
+        $sql = "UPDATE it_speks_Lietotaji SET Vards=?, Uzvards=?, Epasts=?, Talrunis=?, Piezimes=? WHERE Lietotajvards=?";
+        $stmt = $savienojums->prepare($sql);
+        $stmt->bind_param("ssssss", $name, $surname, $email, $phone, $notes, $username);
+        if ($stmt->execute()) {
+            $successMessage = "Profils veiksmīgi atjaunināts!";
+        } else {
+            $errorMessage = "Kļūda datubāzē.";
+        }
+    }
+}
+
+// Получаем данные пользователя, чтобы заполнить форму
 $sql = "SELECT Vards, Uzvards, Epasts, Lietotajvards, Talrunis, Izveides_datums, Statuss, Piezimes FROM it_speks_Lietotaji WHERE Lietotajvards = ?";
 $stmt = $savienojums->prepare($sql);
 $stmt->bind_param("s", $username);
@@ -25,12 +65,16 @@ if ($result->num_rows === 0) {
 $user = $result->fetch_assoc();
 ?>
 
-
 <div class="dashboard">
     <h2 class="dashboard-title">Jūsu profils</h2>
 
     <div class="form-card">
-        <form class="form" method="POST" action="/update-profile">
+        <?php if ($successMessage): ?>
+            <p style="color: green; font-weight: bold;"><?= htmlspecialchars($successMessage) ?></p>
+        <?php elseif ($errorMessage): ?>
+            <p style="color: red; font-weight: bold;"><?= htmlspecialchars($errorMessage) ?></p>
+        <?php endif; ?>
+        <form class="form" method="POST" action="">
             <div class="form-grid">
                 <div class="form-group">
                     <label for="name">Vārds:</label>
@@ -84,6 +128,7 @@ $user = $result->fetch_assoc();
         </form>
     </div>
 </div>
+
 <?php
 require "../files/footer.php";
 ?>
