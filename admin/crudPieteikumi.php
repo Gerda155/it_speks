@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['lietotajvards'])) {
-    header("Location: login.php"); 
+    header("Location: login.php");
     exit();
 }
 
@@ -18,11 +18,21 @@ if (isset($_GET['status'])) {
     $statusFilter = "WHERE p.Statuss = '$status'";
 
     switch ($status) {
-        case 'Jauns': $statusName = "Jaunie pieteikumi"; break;
-        case 'Gaida atbildi': $statusName = "Gaida atbildi"; break;
-        case 'Apstiprināts': $statusName = "Apstiprinātie pieteikumi"; break;
-        case 'Noraidīts': $statusName = "Noraidītie pieteikumi"; break;
-        default: $statusName = "Pieteikumi"; break;
+        case 'Jauns':
+            $statusName = "Jaunie pieteikumi";
+            break;
+        case 'Gaida atbildi':
+            $statusName = "Gaida atbildi";
+            break;
+        case 'Apstiprināts':
+            $statusName = "Apstiprinātie pieteikumi";
+            break;
+        case 'Noraidīts':
+            $statusName = "Noraidītie pieteikumi";
+            break;
+        default:
+            $statusName = "Pieteikumi";
+            break;
     }
 } else {
     $statusName = "Visi pieteikumi";
@@ -126,6 +136,19 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
             ?>
         </tbody>
     </table>
+    <div class="pagination">
+        <?php if ($totalPages > 1): ?>
+            <?php for ($p = 1; $p <= $totalPages; $p++): ?>
+                <?php
+                // Сохраняем get параметры sort и status для навигации
+                $params = $_GET;
+                $params['page'] = $p;
+                $queryString = http_build_query($params);
+                ?>
+                <a href="?<?= $queryString ?>" class="<?= $p === $page ? 'active' : '' ?>"><?= $p ?></a>
+            <?php endfor; ?>
+        <?php endif; ?>
+    </div>
 </main>
 <?php
 require "../files/footer.php";

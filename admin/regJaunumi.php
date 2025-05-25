@@ -231,5 +231,4 @@ $izvelētaisModeratorID = $isEdit ? $ziņa['Lietotaj_ID'] : null;
     </div>
 </main>
 
-
 <?php require "../files/footer.php"; ?>
