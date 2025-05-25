@@ -423,6 +423,7 @@ select,
 input[type="password"],
 input[type="email"],
 input[type="number"],
+input[type="datetime-local"],
 input[type="date"] {
     padding: 12px 16px;
     border: 1px solid #ccc;

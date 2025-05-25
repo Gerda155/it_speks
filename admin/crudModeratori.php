@@ -119,6 +119,5 @@ $result = mysqli_query($savienojums, $query);
     </table>
 </main>
 <?php
-require "../files/crud.php";
 require "../files/footer.php";
 ?>

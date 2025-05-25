@@ -112,6 +112,5 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
 </main>
 
 <?php
-require "../files/crud.php";
 require "../files/footer.php";
 ?>
