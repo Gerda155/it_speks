@@ -6,8 +6,22 @@ if (!isset($_SESSION['lietotajvards'])) {
     exit();
 }
 
-require "../files/header.php";
 require "../files/database.php";
+
+// Удаление вакансии
+if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
+    $deleteId = intval($_GET['delete']);
+    $deleteSql = "DELETE FROM it_speks_Vakances WHERE Vakances_ID = $deleteId LIMIT 1";
+    if (mysqli_query($savienojums, $deleteSql)) {
+        header("Location: crudVakances.php?success=deleted");
+        exit();
+    } else {
+        echo "<p style='color:red; text-align:center;'>Kļūda dzēšot vakanci: " . mysqli_error($savienojums) . "</p>";
+    }
+}
+
+
+require "../files/header.php";
 
 $statusFilter = "";
 if (isset($_GET['status'])) {
@@ -112,14 +126,14 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
                     echo "<td>" . htmlspecialchars($row['Darba_apraksts']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['Publicesanas_datums']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['Tips']) . "</td>";
-                    $attels = $rinda['Bilde'] !== null ? base64_encode($rinda['Bilde']) : null;
+                    $attels = $row['Bilde'] !== null ? base64_encode($row['Bilde']) : null;
                     if ($attels) {
                         echo "<td><i class='fa-solid fa-check'></i></td>";
                     } else {
                         echo "<td><i class='fa-solid fa-xmark'></i></td>";
                     }
                     echo "<td class='action-buttons'><a href='regVakances.php?id=" . $row['Vakances_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
-                    echo "<td class='action-buttons'><a href='regVakances.php?id=" . $row['Vakances_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='?delete=" . $row['Vakances_ID'] . "' onclick='return confirm(\"Vai tiešām dzēst šo vakanci?\")' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
                     echo "</tr>";
                 }
             } else {

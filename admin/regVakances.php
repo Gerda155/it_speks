@@ -1,5 +1,6 @@
 <?php
 session_start();
+ob_start();
 
 if (!isset($_SESSION['lietotajvards'])) {
     header("Location: login.php"); 
@@ -56,11 +57,76 @@ if ($modResult) {
         $moderatori[] = $row;
     }
 }
+
+$izveletaisModeratorID = $isEdit ? intval($vakance['Lietotaj_ID']) : intval($_SESSION['lietotajvards']);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $izveletaisModeratorID = intval($_POST['moderators']);
+    $amata_nosaukums = mysqli_real_escape_string($savienojums, $_POST['amata_nosaukums']);
+    $uznemuma_nosaukums = mysqli_real_escape_string($savienojums, $_POST['uznemuma_nosaukums']);
+    $atrasanas_vieta = mysqli_real_escape_string($savienojums, $_POST['atrasanas_vieta']);
+    $alga = floatval($_POST['alga']);
+    $prasibas = mysqli_real_escape_string($savienojums, $_POST['prasibas']);
+    $darba_apraksts = mysqli_real_escape_string($savienojums, $_POST['darba_apraksts']);
+    $statuss = $_POST['statuss'];
+    $publicesanas_datums = $_POST['publicesanas_datums'];
+    $beigu_datums = $_POST['beigu_datums'];
+    $tips = $_POST['tips'];
+
+    // Обработка файла изображения (если загружен)
+    $bilde_data = null;
+    if (!empty($_FILES['bilde']['tmp_name'])) {
+        $bilde_data = file_get_contents($_FILES['bilde']['tmp_name']);
+        $bilde_data = mysqli_real_escape_string($savienojums, $bilde_data);
+    }
+
+    if ($isEdit) {
+        // UPDATE запрос
+        $sql = "UPDATE it_speks_Vakances SET 
+            Lietotaj_ID = $izveletaisModeratorID,
+            Amata_nosaukums = '$amata_nosaukums',
+            Uznemuma_nosaukums = '$uznemuma_nosaukums',
+            Atrasanas_vieta = '$atrasanas_vieta',
+            Alga = $alga,
+            Prasibas = '$prasibas',
+            Darba_apraksts = '$darba_apraksts',
+            Statuss = '$statuss',
+            Publicesanas_datums = '$publicesanas_datums',
+            Beigu_datums = '$beigu_datums',
+            Tips = '$tips'";
+
+        if ($bilde_data !== null) {
+            $sql .= ", Bilde = '$bilde_data'";
+        }
+        $sql .= " WHERE Vakances_ID = $id";
+
+        if (mysqli_query($savienojums, $sql)) {
+            header("Location: crudVakances.php?success=updated");
+            exit();
+        } else {
+            echo "<p style='color:red;'>Kļūda atjauninot vakanci: " . mysqli_error($savienojums) . "</p>";
+        }
+
+    } else {
+        // INSERT запрос
+        $sql = "INSERT INTO it_speks_Vakances 
+            (Lietotaj_ID, Amata_nosaukums, Uznemuma_nosaukums, Atrasanas_vieta, Alga, Prasibas, Darba_apraksts, Statuss, Publicesanas_datums, Beigu_datums, Tips, Bilde)
+            VALUES
+            ($izveletaisModeratorID, '$amata_nosaukums', '$uznemuma_nosaukums', '$atrasanas_vieta', $alga, '$prasibas', '$darba_apraksts', '$statuss', '$publicesanas_datums', '$beigu_datums', '$tips', " . ($bilde_data !== null ? "'$bilde_data'" : "NULL") . ")";
+
+        if (mysqli_query($savienojums, $sql)) {
+            header("Location: crudVakances.php?success=created");
+            exit();
+        } else {
+            echo "<p style='color:red;'>Kļūda pievienojot vakanci: " . mysqli_error($savienojums) . "</p>";
+        }
+    }
+}
+
 ?>
 
 <main>
     <div class="form-grid-card">
-        <!-- Колонка 1: Основные поля -->
         <div class="login-box">
             <h1><?= $isEdit ? "Rediģēt vakanci" : "Izveidot jaunu vakanci" ?></h1>
             <p class="login-subtitle">Aizpildi visus laukus</p>
@@ -72,7 +138,7 @@ if ($modResult) {
                 <select name="moderators" id="moderators" required>
                     <option value="">-- Izvēlies moderatoru --</option>
                     <?php foreach ($moderatori as $mod): ?>
-                        <option value="<?= $mod['Lietotaj_ID'] ?>" <?= ($mod['Lietotaj_ID'] == $izvelētaisModeratorID) ? 'selected' : '' ?>>
+                        <option value="<?= $mod['Lietotaj_ID'] ?>" <?= ($mod['Lietotaj_ID'] == $izveletaisModeratorID) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($mod['Uzvards']) ?>
                         </option>
                     <?php endforeach; ?>
@@ -185,4 +251,7 @@ if ($modResult) {
     </div>
 </main>
 
-<?php require "../files/footer.php"; ?>
+<?php
+require "../files/footer.php";
+ob_end_flush();
+?>
