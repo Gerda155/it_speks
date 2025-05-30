@@ -114,7 +114,19 @@ if ($result && mysqli_num_rows($result) === 1) {
                         </div>
                     </li>
                 <?php endif; ?>
-
+                                    <li class="sidebar-item">
+                    <div class="sidebar-header">
+                        <div class="sidebar-label">
+                            <i class="fa-solid fa-pen"></i><span>Izmaiņas</span>
+                        </div>
+                        <div class="chevron-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="dropdown-content">
+                        <a class="dropdown-item" href="zinas.php">Izmaiņu saraksts</a>
+                    </div>
+                </li>
             </ul>
             <div class="sidebar-buttons">
                 <button class="edit-button" onclick="window.location.href='index.php'">Sākumlapa</button>

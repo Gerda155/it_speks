@@ -12,17 +12,17 @@ ini_set('display_errors', 1);
 require "../files/header.php";
 require "../files/database.php";
 
-
-// Получаем ID текущего пользователя по username из сессии
 $currentUsername = $_SESSION['lietotajvards'];
-$stmtUser = $savienojums->prepare("SELECT Lietotaj_ID FROM it_speks_Lietotaji WHERE Lietotajvards = ?");
+$stmtUser = $savienojums->prepare("SELECT Lietotaj_ID, Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?");
 $stmtUser->bind_param("s", $currentUsername);
 $stmtUser->execute();
 $resUser = $stmtUser->get_result();
 if ($resUser->num_rows === 0) {
     die("Lietotājs nav atrasts.");
 }
-$currentUserId = $resUser->fetch_assoc()['Lietotaj_ID'];
+$userData = $resUser->fetch_assoc();
+$currentUserId = $userData['Lietotaj_ID'];
+$currentUserFullName = $userData['Vards'] . ' ' . $userData['Uzvards'];
 
 $isEdit = isset($_GET['id']) && is_numeric($_GET['id']);
 $id = $isEdit ? intval($_GET['id']) : null;
@@ -40,9 +40,9 @@ $imagePreview = "";
 $successMessage = "";
 $errorMessage = "";
 
-// Если редактируем — подгружаем данные
+// Редактирование — загружаем текущие данные
 if ($isEdit) {
-    $stmt = $savienojums->prepare("SELECT Nosaukums, Text, Statuss, Bilde, Lietotaj_ID, Publicesanas_datums FROM it_speks_Jaunumi WHERE Jaunumi_ID = ? LIMIT 1");
+    $stmt = $savienojums->prepare("SELECT Nosaukums, Text, Statuss, Bilde, Lietotaj_ID, Publicesanas_datums FROM it_speks_Jaunumi WHERE Jaunumi_ID = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -50,7 +50,7 @@ if ($isEdit) {
         $ziņa = $result->fetch_assoc();
         if (!empty($ziņa['Bilde'])) {
             $base64 = base64_encode($ziņa['Bilde']);
-            $imagePreview = '<img src="data:image/jpeg;base64,' . $base64 . '" alt="Pašreizējais attēls" style="max-width:100%; margin-bottom: 10px; border-radius: 8px;">';
+            $imagePreview = '<img src="data:image/jpeg;base64,' . $base64 . '" style="max-width:100%; margin-bottom: 10px; border-radius: 8px;">';
         }
     } else {
         $errorMessage = "Ziņa nav atrasta";
@@ -58,7 +58,6 @@ if ($isEdit) {
     }
 }
 
-// Получаем текущее время публикации
 $currentDateTime = date('Y-m-d H:i:s');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -66,20 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $text = $_POST['text'] ?? '';
     $statuss = $_POST['statuss'] ?? 'Aktīvs';
     $datums = $_POST['datums'] ?? '';
+    $publicesanasDatums = $datums ? date('Y-m-d H:i:s', strtotime($datums)) : date('Y-m-d H:i:s');
 
-    if ($datums) {
-        $publicesanasDatums = date('Y-m-d H:i:s', strtotime($datums));
-    } else {
-        $publicesanasDatums = date('Y-m-d H:i:s');
-    }
+    $lietotaj_ID = $isEdit ? ($_POST['moderators'] ?? null) : $currentUserId;
 
-    if ($isEdit) {
-        $lietotaj_ID = $_POST['moderators'] ?? null;
-        if (empty($lietotaj_ID) || !is_numeric($lietotaj_ID)) {
-            $errorMessage = "Lūdzu izvēlieties lietotāju!";
-        }
-    } else {
-        $lietotaj_ID = $currentUserId;
+    if ($isEdit && (empty($lietotaj_ID) || !is_numeric($lietotaj_ID))) {
+        $errorMessage = "Lūdzu izvēlieties lietotāju!";
     }
 
     if (!$errorMessage) {
@@ -92,84 +83,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (strpos($fileType, 'image/') === 0 && $fileSize <= 2 * 1024 * 1024) {
                 $imageData = file_get_contents($fileTmpPath);
             } else {
-                $errorMessage = "Nederīgs attēla fails vai pārāk liels.";
+                $errorMessage = "Nederīgs attēls.";
             }
         }
 
         if (!$errorMessage) {
             if ($isEdit) {
+                $query = $imageData !== null ?
+                    "UPDATE it_speks_Jaunumi SET Nosaukums=?, Text=?, Statuss=?, Bilde=?, Lietotaj_ID=?  WHERE Jaunumi_ID=?" :
+                    "UPDATE it_speks_Jaunumi SET Nosaukums=?, Text=?, Statuss=?, Lietotaj_ID=? WHERE Jaunumi_ID=?";
+                $stmtUpdate = $savienojums->prepare($query);
+
                 if ($imageData !== null) {
-                    $stmtUpdate = $savienojums->prepare(
-                        "UPDATE it_speks_Jaunumi SET Nosaukums=?, Text=?, Statuss=?, Bilde=?, Lietotaj_ID=?, Publicesanas_datums=? WHERE Jaunumi_ID=?"
-                    );
-                    $stmtUpdate->bind_param("ssssssi", $nosaukums, $text, $statuss, $imageData, $lietotaj_ID, $publicesanasDatums, $id);
+                    $stmtUpdate->bind_param("sssssi", $nosaukums, $text, $statuss, $imageData, $lietotaj_ID, $id);
                 } else {
-                    $stmtUpdate = $savienojums->prepare(
-                        "UPDATE it_speks_Jaunumi SET Nosaukums=?, Text=?, Statuss=?, Lietotaj_ID=?, Publicesanas_datums=? WHERE Jaunumi_ID=?"
-                    );
-                    $stmtUpdate->bind_param("sssisi", $nosaukums, $text, $statuss, $lietotaj_ID, $publicesanasDatums, $id);
+                    $stmtUpdate->bind_param("sssii", $nosaukums, $text, $statuss, $lietotaj_ID, $id);
                 }
 
                 if ($stmtUpdate->execute()) {
                     $successMessage = "Ziņa veiksmīgi atjaunināta.";
 
                     // Запись в историю
-                    $objekts = 'Ziņa ar ID ' . $id;
-                    $notikums = 'Atjauninājums ziņai';
-                    $stmtVesture = $savienojums->prepare(
-                        "INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, ?)"
-                    );
-                    $stmtVesture->bind_param("isss", $lietotaj_ID, $objekts, $notikums, $publicesanasDatums);
-                    $stmtVesture->execute();
-
-                    // Обновим данные для показа
-                    $stmt = $savienojums->prepare("SELECT Nosaukums, Text, Statuss, Bilde, Lietotaj_ID, Publicesanas_datums FROM it_speks_Jaunumi WHERE Jaunumi_ID = ? LIMIT 1");
-                    $stmt->bind_param("i", $id);
-                    $stmt->execute();
-                    $result = $stmt->get_result();
-                    $ziņa = $result->fetch_assoc();
-
-                    if (!empty($ziņa['Bilde'])) {
-                        $base64 = base64_encode($ziņa['Bilde']);
-                        $imagePreview = '<img src="data:image/jpeg;base64,' . $base64 . '" alt="Pašreizējais attēls" style="max-width:100%; margin-bottom: 10px; border-radius: 8px;">';
-                    }
+                    $objekts = 'Jaunums ar ID ' . $id;
+                    $notikums = 'Ziņa atjaunināta';
+                    $date = date('Y-m-d H:i:s');
+                    $stmtHist = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, ?)");
+                    $stmtHist->bind_param("ssss", $currentUserFullName, $objekts, $notikums, $date);
+                    $stmtHist->execute();
                 } else {
-                    $errorMessage = "Neizdevās atjaunināt ziņu.";
+                    $errorMessage = "Kļūda atjauninot ziņu.";
                 }
             } else {
-                $stmtInsert = $savienojums->prepare(
-                    "INSERT INTO it_speks_Jaunumi (Nosaukums, Text, Statuss, Bilde, Lietotaj_ID, Publicesanas_datums) VALUES (?, ?, ?, ?, ?, ?)"
-                );
+                $stmtInsert = $savienojums->prepare("INSERT INTO it_speks_Jaunumi (Nosaukums, Text, Statuss, Bilde, Lietotaj_ID, Publicesanas_datums) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmtInsert->bind_param("ssssss", $nosaukums, $text, $statuss, $imageData, $lietotaj_ID, $publicesanasDatums);
 
                 if ($stmtInsert->execute()) {
                     $successMessage = "Ziņa veiksmīgi izveidota.";
-
                     $newId = $savienojums->insert_id;
 
-                    // Запись в историю
-                    $objekts = 'Jauna ziņa ar ID ' . $newId;
-                    $notikums = 'Izveidota jauna ziņa';
-                    $stmtVesture = $savienojums->prepare(
-                        "INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, ?)"
-                    );
-                    $stmtVesture->bind_param("isss", $lietotaj_ID, $objekts, $notikums, $publicesanasDatums);
-                    $stmtVesture->execute();
+                    $objekts = 'Jaunums ar ID ' . $newId;
+                    $notikums = 'Jauna ziņa pievienota';
+                    $stmtHist = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, ?)");
+                    $stmtHist->bind_param("ssss", $currentUserFullName, $objekts, $notikums, $publicesanasDatums);
+                    $stmtHist->execute();
 
                     $ziņa = ['Nosaukums' => '', 'Text' => '', 'Statuss' => 'Aktīvs', 'Bilde' => null, 'Lietotaj_ID' => null, 'Publicesanas_datums' => null];
                     $imagePreview = "";
                 } else {
-                    $errorMessage = "Neizdevās izveidot ziņu.";
+                    $errorMessage = "Kļūda saglabājot ziņu.";
                 }
             }
         }
     }
 }
 
-// Получаем список пользователей для выбора при редактировании
+// Получаем список пользователей
 $moderatori = [];
-$modQuery = "SELECT Lietotaj_ID, Vards, Uzvards FROM it_speks_Lietotaji ORDER BY Uzvards ASC";
-$modResult = mysqli_query($savienojums, $modQuery);
+$modResult = mysqli_query($savienojums, "SELECT Lietotaj_ID, Vards, Uzvards FROM it_speks_Lietotaji ORDER BY Uzvards ASC");
 if ($modResult) {
     while ($row = mysqli_fetch_assoc($modResult)) {
         $moderatori[] = $row;

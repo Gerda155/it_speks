@@ -74,36 +74,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($isEdit) {
         $updateQuery = "
-            UPDATE it_speks_Pieteiksanas 
-            SET Vards='$vards', Uzvards='$uzvards', Epasts='$epasts',
-                Talrunis='$talrunis',
-                Komentars='$komentars',
-                Vakances_ID=$vakances_id,
-                Statuss='$statuss',
-                Izglitiba=" . ($izglitiba !== null ? "'$izglitiba'" : "NULL") . ",
-                Darba_pieredze=" . ($darba_pieredze !== null ? "'$darba_pieredze'" : "NULL") . ",
-                CV=" . ($cvBlob !== null ? "'$cvBlob'" : "NULL") . "
-            WHERE Pieteiksanas_ID=$id
-        ";
+        UPDATE it_speks_Pieteiksanas 
+        SET Vards='$vards', Uzvards='$uzvards', Epasts='$epasts',
+            Talrunis='$talrunis',
+            Komentars='$komentars',
+            Vakances_ID=$vakances_id,
+            Statuss='$statuss',
+            Izglitiba=" . ($izglitiba !== null ? "'$izglitiba'" : "NULL") . ",
+            Darba_pieredze=" . ($darba_pieredze !== null ? "'$darba_pieredze'" : "NULL") . ",
+            CV=" . ($cvBlob !== null ? "'$cvBlob'" : "NULL") . "
+        WHERE Pieteiksanas_ID=$id
+    ";
         mysqli_query($savienojums, $updateQuery);
+
+        // Получаем ФИО пользователя
+        $lietotajvards = $_SESSION['lietotajvards'];
+        $stmt = $savienojums->prepare("SELECT Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?");
+        $stmt->bind_param("s", $lietotajvards);
+        $stmt->execute();
+        $stmt->bind_result($vardsLietotaja, $uzvardsLietotaja);
+        $stmt->fetch();
+        $stmt->close();
+
+        $lietotajsPilns = "$vardsLietotaja $uzvardsLietotaja";
+        $darbiba = "Rediģēts pieteikums: $vards $uzvards";
+
+        // 👇 Добавлена запись в историю действий
+        $stmt2 = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Objekts, Notikums, Datums, Lietotajs) VALUES (?, ?, NOW(), ?)");
+        $stmt2->bind_param("sss", $lietotajsPilns, $darbiba, $lietotajsPilns);
+        $stmt2->execute();
+        $stmt2->close();
     } else {
         $insertQuery = "
-            INSERT INTO it_speks_Pieteiksanas 
-            (Vards, Uzvards, Epasts, Talrunis, Komentars, Vakances_ID, Pieteiksanas_datums, Statuss, Izglitiba, Darba_pieredze, CV)
-            VALUES (
-                '$vards', '$uzvards', '$epasts', '$talrunis', '$komentars', $vakances_id, '$datums', '$statuss',
-                " . ($izglitiba !== null ? "'$izglitiba'" : "NULL") . ",
-                " . ($darba_pieredze !== null ? "'$darba_pieredze'" : "NULL") . ",
-                " . ($cvBlob !== null ? "'$cvBlob'" : "NULL") . "
-                )
-            ";
+        INSERT INTO it_speks_Pieteiksanas 
+        (Vards, Uzvards, Epasts, Talrunis, Komentars, Vakances_ID, Pieteiksanas_datums, Statuss, Izglitiba, Darba_pieredze, CV)
+        VALUES (
+            '$vards', '$uzvards', '$epasts', '$talrunis', '$komentars', $vakances_id, '$datums', '$statuss',
+            " . ($izglitiba !== null ? "'$izglitiba'" : "NULL") . ",
+            " . ($darba_pieredze !== null ? "'$darba_pieredze'" : "NULL") . ",
+            " . ($cvBlob !== null ? "'$cvBlob'" : "NULL") . "
+        )
+    ";
         mysqli_query($savienojums, $insertQuery);
-    }
 
+        // Получаем ФИО пользователя
+        $lietotajvards = $_SESSION['lietotajvards'];
+        $stmt = $savienojums->prepare("SELECT Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?");
+        $stmt->bind_param("s", $lietotajvards);
+        $stmt->execute();
+        $stmt->bind_result($vardsLietotaja, $uzvardsLietotaja);
+        $stmt->fetch();
+        $stmt->close();
+
+        $lietotajsPilns = "$vardsLietotaja $uzvardsLietotaja";
+        $darbiba = "Izveidots pieteikums: $vards $uzvards";
+
+        $stmt2 = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Objekts, Notikums, Datums, Lietotajs) VALUES (?, ?, NOW(), ?)");
+        $stmt2->bind_param("sss", $lietotajsPilns, $darbiba, $lietotajsPilns);
+        $stmt2->execute();
+        $stmt2->close();
+    }
     header("Location: crudPieteikumi.php");
     exit();
 }
-
 ?>
 
 <main>
@@ -129,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div id="cv_file_section">
                     <label for="cv">CV</label>
-                    <input type="file" name="cv" id="cv"> 
+                    <input type="file" name="cv" id="cv">
                 </div>
 
                 <div id="cv_manual_section" style="display: none;">

@@ -3,7 +3,7 @@ session_start();
 ob_start();
 
 if (!isset($_SESSION['lietotajvards'])) {
-    header("Location: login.php"); 
+    header("Location: login.php");
     exit();
 }
 
@@ -13,7 +13,6 @@ ini_set('display_errors', 1);
 require "../files/header.php";
 require "../files/database.php";
 
-// Проверяем, редактируем или создаём
 $isEdit = isset($_GET['id']) && is_numeric($_GET['id']);
 $vakance = [
     'Lietotaj_ID' => '',
@@ -33,11 +32,13 @@ $imagePreview = "";
 
 if ($isEdit) {
     $id = intval($_GET['id']);
-    $query = "SELECT Lietotaj_ID, Amata_nosaukums, Uznemuma_nosaukums, Atrasanas_vieta, Alga, Prasibas, Darba_apraksts, Statuss, Publicesanas_datums, Beigu_datums, Tips, Bilde FROM it_speks_Vakances WHERE Vakances_ID = $id LIMIT 1";
-    $result = mysqli_query($savienojums, $query);
+    $stmt = $savienojums->prepare("SELECT Lietotaj_ID, Amata_nosaukums, Uznemuma_nosaukums, Atrasanas_vieta, Alga, Prasibas, Darba_apraksts, Statuss, Publicesanas_datums, Beigu_datums, Tips, Bilde FROM it_speks_Vakances WHERE Vakances_ID = ? LIMIT 1");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    if ($result && mysqli_num_rows($result) > 0) {
-        $vakance = mysqli_fetch_assoc($result);
+    if ($result && $result->num_rows > 0) {
+        $vakance = $result->fetch_assoc();
 
         if (!empty($vakance['Bilde'])) {
             $base64 = base64_encode($vakance['Bilde']);
@@ -61,68 +62,64 @@ if ($modResult) {
 $izveletaisModeratorID = $isEdit ? intval($vakance['Lietotaj_ID']) : intval($_SESSION['lietotajvards']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $datums = date("Y-m-d H:i:s");
+    $currentUsername = $_SESSION['lietotajvards'];
+    $stmtUser = $savienojums->prepare("SELECT Lietotaj_ID, Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?");
+    $stmtUser->bind_param("s", $currentUsername);
+    $stmtUser->execute();
+    $resUser = $stmtUser->get_result();
+    if ($resUser->num_rows === 0) {
+        die("Lietotājs nav atrasts.");
+    }
+    $userData = $resUser->fetch_assoc();
+    $currentUserId = $userData['Lietotaj_ID'];
+    $currentUserFullName = $userData['Vards'] . ' ' . $userData['Uzvards'];
     $izveletaisModeratorID = intval($_POST['moderators']);
-    $amata_nosaukums = mysqli_real_escape_string($savienojums, $_POST['amata_nosaukums']);
-    $uznemuma_nosaukums = mysqli_real_escape_string($savienojums, $_POST['uznemuma_nosaukums']);
-    $atrasanas_vieta = mysqli_real_escape_string($savienojums, $_POST['atrasanas_vieta']);
+    $amata_nosaukums = $_POST['amata_nosaukums'];
+    $uznemuma_nosaukums = $_POST['uznemuma_nosaukums'];
+    $atrasanas_vieta = $_POST['atrasanas_vieta'];
     $alga = floatval($_POST['alga']);
-    $prasibas = mysqli_real_escape_string($savienojums, $_POST['prasibas']);
-    $darba_apraksts = mysqli_real_escape_string($savienojums, $_POST['darba_apraksts']);
+    $prasibas = $_POST['prasibas'];
+    $darba_apraksts = $_POST['darba_apraksts'];
     $statuss = $_POST['statuss'];
     $publicesanas_datums = $_POST['publicesanas_datums'];
     $beigu_datums = $_POST['beigu_datums'];
     $tips = $_POST['tips'];
 
-    // Обработка файла изображения (если загружен)
     $bilde_data = null;
     if (!empty($_FILES['bilde']['tmp_name'])) {
         $bilde_data = file_get_contents($_FILES['bilde']['tmp_name']);
-        $bilde_data = mysqli_real_escape_string($savienojums, $bilde_data);
     }
 
     if ($isEdit) {
-        // UPDATE запрос
-        $sql = "UPDATE it_speks_Vakances SET 
-            Lietotaj_ID = $izveletaisModeratorID,
-            Amata_nosaukums = '$amata_nosaukums',
-            Uznemuma_nosaukums = '$uznemuma_nosaukums',
-            Atrasanas_vieta = '$atrasanas_vieta',
-            Alga = $alga,
-            Prasibas = '$prasibas',
-            Darba_apraksts = '$darba_apraksts',
-            Statuss = '$statuss',
-            Publicesanas_datums = '$publicesanas_datums',
-            Beigu_datums = '$beigu_datums',
-            Tips = '$tips'";
-
         if ($bilde_data !== null) {
-            $sql .= ", Bilde = '$bilde_data'";
-        }
-        $sql .= " WHERE Vakances_ID = $id";
-
-        if (mysqli_query($savienojums, $sql)) {
-            header("Location: crudVakances.php?success=updated");
-            exit();
+            $stmt = $savienojums->prepare("UPDATE it_speks_Vakances SET Lietotaj_ID=?, Amata_nosaukums=?, Uznemuma_nosaukums=?, Atrasanas_vieta=?, Alga=?, Prasibas=?, Darba_apraksts=?, Statuss=?, Publicesanas_datums=?, Beigu_datums=?, Tips=?, Bilde=? WHERE Vakances_ID=?");
+            $stmt->bind_param("isssdssssssbi", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $bilde_data, $id);
         } else {
-            echo "<p style='color:red;'>Kļūda atjauninot vakanci: " . mysqli_error($savienojums) . "</p>";
+            $stmt = $savienojums->prepare("UPDATE it_speks_Vakances SET Lietotaj_ID=?, Amata_nosaukums=?, Uznemuma_nosaukums=?, Atrasanas_vieta=?, Alga=?, Prasibas=?, Darba_apraksts=?, Statuss=?, Publicesanas_datums=?, Beigu_datums=?, Tips=? WHERE Vakances_ID=?");
+            $stmt->bind_param("isssdssssssi", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $id);
         }
-
+        $objekts = "Vakance ar ID $id";
+        $notikums = "Rediģēta";
     } else {
-        // INSERT запрос
-        $sql = "INSERT INTO it_speks_Vakances 
-            (Lietotaj_ID, Amata_nosaukums, Uznemuma_nosaukums, Atrasanas_vieta, Alga, Prasibas, Darba_apraksts, Statuss, Publicesanas_datums, Beigu_datums, Tips, Bilde)
-            VALUES
-            ($izveletaisModeratorID, '$amata_nosaukums', '$uznemuma_nosaukums', '$atrasanas_vieta', $alga, '$prasibas', '$darba_apraksts', '$statuss', '$publicesanas_datums', '$beigu_datums', '$tips', " . ($bilde_data !== null ? "'$bilde_data'" : "NULL") . ")";
+        $stmt = $savienojums->prepare("INSERT INTO it_speks_Vakances (Lietotaj_ID, Amata_nosaukums, Uznemuma_nosaukums, Atrasanas_vieta, Alga, Prasibas, Darba_apraksts, Statuss, Publicesanas_datums, Beigu_datums, Tips, Bilde) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssdsssssss", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $bilde_data);
+        $objekts = "Vakance";
+        $notikums = "Pievienota";
+    }
 
-        if (mysqli_query($savienojums, $sql)) {
-            header("Location: crudVakances.php?success=created");
-            exit();
-        } else {
-            echo "<p style='color:red;'>Kļūda pievienojot vakanci: " . mysqli_error($savienojums) . "</p>";
-        }
+    if ($stmt->execute()) {
+        // Лог действий
+        $stmtHist = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, NOW())");
+        $stmtHist->bind_param("sss", $currentUserFullName, $objekts, $notikums);
+        $stmtHist->execute();
+
+        header("Location: crudVakances.php?success=" . ($isEdit ? "updated" : "created"));
+        exit();
+    } else {
+        echo "<p style='color:red;'>Kļūda saglabājot vakanci: " . $stmt->error . "</p>";
     }
 }
-
 ?>
 
 <main>
@@ -150,8 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     id="amata_nosaukums"
                     placeholder="Amata nosaukums"
                     value="<?= htmlspecialchars($vakance['Amata_nosaukums']) ?>"
-                    required
-                />
+                    required />
 
                 <input
                     type="text"
@@ -159,8 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     id="uznemuma_nosaukums"
                     placeholder="Uzņēmuma nosaukums"
                     value="<?= htmlspecialchars($vakance['Uznemuma_nosaukums']) ?>"
-                    required
-                />
+                    required />
 
                 <input
                     type="text"
@@ -168,8 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     id="atrasanas_vieta"
                     placeholder="Atrašanās vieta"
                     value="<?= htmlspecialchars($vakance['Atrasanas_vieta']) ?>"
-                    required
-                />
+                    required />
 
                 <input
                     type="text"
@@ -179,24 +173,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     value="<?= htmlspecialchars($vakance['Alga']) ?>"
                     min="0"
                     step="0.01"
-                    required
-                />
+                    required />
 
                 <textarea
                     name="prasibas"
                     id="prasibas"
                     placeholder="Prasības"
                     rows="4"
-                    required
-                ><?= htmlspecialchars($vakance['Prasibas']) ?></textarea>
+                    required><?= htmlspecialchars($vakance['Prasibas']) ?></textarea>
 
                 <textarea
                     name="darba_apraksts"
                     id="darba_apraksts"
                     placeholder="Darba apraksts"
                     rows="4"
-                    required
-                ><?= htmlspecialchars($vakance['Darba_apraksts']) ?></textarea>
+                    required><?= htmlspecialchars($vakance['Darba_apraksts']) ?></textarea>
 
                 <select name="statuss" id="statuss" required>
                     <option value="Aktīvs" <?= $vakance['Statuss'] === 'Aktīvs' ? 'selected' : '' ?>>Aktīvs</option>
@@ -210,8 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     name="publicesanas_datums"
                     id="publicesanas_datums"
                     value="<?= htmlspecialchars($vakance['Publicesanas_datums']) ?>"
-                    required
-                />
+                    required />
 
                 <label for="beigu_datums">Beigu datums</label>
                 <input
@@ -219,8 +209,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     name="beigu_datums"
                     id="beigu_datums"
                     value="<?= htmlspecialchars($vakance['Beigu_datums']) ?>"
-                    required
-                />
+                    required />
 
                 <select name="tips" id="tips" required>
                     <option value="Pilna laika" <?= $vakance['Tips'] === 'Pilna laika' ? 'selected' : '' ?>>Pilna laika</option>
@@ -247,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </label>
             <input type="file" name="bilde" id="bilde" accept="image/*" />
         </div>
-            </form>
+        </form>
     </div>
 </main>
 

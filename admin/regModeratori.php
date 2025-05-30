@@ -12,9 +12,21 @@ ini_set('display_errors', 1);
 
 require "../files/database.php";
 
-var_dump($_GET);
+// Получаем данные текущего пользователя
+$currentUsername = $_SESSION['lietotajvards'];
+$stmtUser = $savienojums->prepare("SELECT Lietotaj_ID, Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?");
+$stmtUser->bind_param("s", $currentUsername);
+$stmtUser->execute();
+$resUser = $stmtUser->get_result();
 
-// Режим: редактирование или создание
+if ($resUser->num_rows === 0) {
+    die("Lietotājs nav atrasts.");
+}
+
+$userData = $resUser->fetch_assoc();
+$currentUserId = $userData['Lietotaj_ID'];
+$currentUserFullName = $userData['Vards'] . ' ' . $userData['Uzvards'];
+
 $isEdit = isset($_GET['id']) && is_numeric($_GET['id']);
 $moderators = [
     'Vards' => '',
@@ -56,7 +68,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $parole1 = $_POST['parole1'] ?? '';
     $parole2 = $_POST['parole2'] ?? '';
 
-    // Валидация пароля
     if ($isEdit) {
         if ($parole1 !== '' || $parole2 !== '') {
             if ($parole1 !== $parole2) {
@@ -77,7 +88,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 
-    // Проверка уникальности Lietotajvards
     if ($errorMessage === '') {
         $queryCheck = "SELECT Lietotaj_ID FROM it_speks_Lietotaji WHERE Lietotajvards = ?";
         $stmtCheck = $savienojums->prepare($queryCheck);
@@ -96,16 +106,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if ($errorMessage === '') {
+        $datums = date("Y-m-d H:i:s");
+
         if ($isEdit) {
             $stmt = $savienojums->prepare("UPDATE it_speks_Lietotaji SET Vards=?, Uzvards=?, Epasts=?, Lietotajvards=?, Parole=?, Loma=?, Statuss=?, Piezimes=?, Talrunis=? WHERE Lietotaj_ID=?");
             $stmt->bind_param("sssssssssi", $vards, $uzvards, $epasts, $lietotajvards, $parole, $loma, $statuss, $piezimes, $talrunis, $id);
+            $objekts = "Moderators ar ID $id";
+            $notikums = "Moderators rediģēts";
         } else {
-            $izveides_datums = date("Y-m-d H:i:s");
+            $izveides_datums = $datums;
             $stmt = $savienojums->prepare("INSERT INTO it_speks_Lietotaji (Vards, Uzvards, Epasts, Lietotajvards, Parole, Loma, Izveides_datums, Statuss, Piezimes, Talrunis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("ssssssssss", $vards, $uzvards, $epasts, $lietotajvards, $parole, $loma, $izveides_datums, $statuss, $piezimes, $talrunis);
+            $objekts = "Moderators ar vārdu $vards $uzvards";
+            $notikums = "Jauns moderators izveidots";
         }
 
         if ($stmt->execute()) {
+            // Запись в историю действий
+            $stmtHist = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, ?)");
+            $stmtHist->bind_param("ssss", $currentUserFullName, $objekts, $notikums, $datums);
+            $stmtHist->execute();
+
             header("Location: crudModeratori.php?msg=success");
             exit();
         } else {
@@ -113,6 +134,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 }
+
 require "../files/header.php";
 ob_end_flush();
 ?>
