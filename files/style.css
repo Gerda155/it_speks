@@ -801,6 +801,12 @@ textarea {
     margin-top: 20px;
 }
 
+/*____________Validacija_______________*/
+.error {
+  color: red;
+  font-size: 0.9em;
+  margin-bottom: 10px;
+}
 
 /*_________FOOTER___________*/
 .footer {

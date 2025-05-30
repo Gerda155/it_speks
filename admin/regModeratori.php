@@ -126,17 +126,18 @@ ob_end_flush();
                 <p style="color: red; text-align: center;"><?= htmlspecialchars($errorMessage) ?></p>
             <?php endif; ?>
 
-            <form action="<?= $isEdit ? '?id=' . $id : '' ?>" method="POST" class="form-layout">
-                <input type="text" name="vards" placeholder="Vārds" value="<?= htmlspecialchars($moderators['Vards']) ?>" required />
-                <input type="text" name="uzvards" placeholder="Uzvārds" value="<?= htmlspecialchars($moderators['Uzvards']) ?>" required />
-                <input type="email" name="epasts" placeholder="E-pasts" value="<?= htmlspecialchars($moderators['Epasts']) ?>" required />
-                <input type="text" name="lietotajvards" placeholder="Lietotājvārds" value="<?= htmlspecialchars($moderators['Lietotajvards']) ?>" required />
+            <form id="moderatorForm" action="<?= $isEdit ? '?id=' . $id : '' ?>" method="POST" class="form-layout">
+                <input type="text" id="vards" name="vards" placeholder="Vārds" value="<?= htmlspecialchars($moderators['Vards']) ?>" required />
+                <input type="text" id="uzvards" name="uzvards" placeholder="Uzvārds" value="<?= htmlspecialchars($moderators['Uzvards']) ?>" required />
+                <input type="email" id="epasts" name="epasts" placeholder="E-pasts" value="<?= htmlspecialchars($moderators['Epasts']) ?>" required />
+                <input type="text" id="lietotajvards" name="lietotajvards" placeholder="Lietotājvārds" value="<?= htmlspecialchars($moderators['Lietotajvards']) ?>" required />
 
                 <label for="parole1">Parole</label>
-                <input type="password" name="parole1" placeholder="••••••••" <?= $isEdit ? '' : 'required' ?> />
+                <div id="error-parole" class="error" style="color: red;"></div>
+                <input type="password" id="parole1" name="parole1" placeholder="••••••••" <?= $isEdit ? '' : 'required' ?> />
 
                 <label for="parole2">Atkārtot paroli</label>
-                <input type="password" name="parole2" placeholder="••••••••" <?= $isEdit ? '' : 'required' ?> />
+                <input type="password" id="parole2" name="parole2" placeholder="••••••••" <?= $isEdit ? '' : 'required' ?> />
 
                 <?php if ($isEdit): ?>
                     <label for="loma">Loma</label>
@@ -164,4 +165,27 @@ ob_end_flush();
     </div>
 </main>
 
+<script>
+    document.getElementById('moderatorForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        let hasError = false;
+
+        document.querySelectorAll('.error').forEach(el => el.textContent = '');
+
+        const parole1 = document.querySelector('input[name="parole1"]').value;
+        const parole2 = document.querySelector('input[name="parole2"]').value;
+
+        if (parole1 || parole2) {
+            if (parole1 !== parole2) {
+                document.getElementById('error-parole').textContent = 'Paroles nesakrīt.';
+                hasError = true;
+            }
+        }
+
+        if (!hasError) {
+            this.submit();
+        }
+    });
+</script>
 <?php require "../files/footer.php"; ?>

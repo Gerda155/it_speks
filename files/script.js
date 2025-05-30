@@ -52,4 +52,3 @@ cancelBtn.addEventListener('click', e => {
     modal.classList.add('hidden');
     selectedId = null;
 });
-
