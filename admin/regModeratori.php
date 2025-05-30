@@ -10,18 +10,9 @@ if (!isset($_SESSION['lietotajvards'])) {
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require "../files/header.php";
 require "../files/database.php";
 
-// Обработка удаления
-if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
-    $deleteId = intval($_GET['delete']);
-    $stmt = $savienojums->prepare("DELETE FROM it_speks_Lietotaji WHERE Lietotaj_ID = ?");
-    $stmt->bind_param("i", $deleteId);
-    $stmt->execute();
-    header("Location: crudModeratori.php?msg=deleted");
-    exit();
-}
+var_dump($_GET);
 
 // Режим: редактирование или создание
 $isEdit = isset($_GET['id']) && is_numeric($_GET['id']);
@@ -122,6 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         }
     }
 }
+require "../files/header.php";
 ob_end_flush();
 ?>
 

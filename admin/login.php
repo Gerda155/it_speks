@@ -15,25 +15,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($lietotajvards === '' || $parole === '') {
         $kluda = "Lūdzu, aizpildi visus laukus.";
     } else {
-        $sql = "SELECT Lietotajvards, Parole FROM it_speks_Lietotaji WHERE Lietotajvards = ?";
+        $sql = "SELECT Lietotajvards, Parole, Loma, Statuss FROM it_speks_Lietotaji WHERE Lietotajvards = ?";
         $stmt = mysqli_prepare($savienojums, $sql);
-        mysqli_stmt_bind_param($stmt, "s", $lietotajvards);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
 
-        if ($result && mysqli_num_rows($result) === 1) {
-            $row = mysqli_fetch_assoc($result);
-            $hashParole = $row['Parole'];
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "s", $lietotajvards);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
-            if (password_verify($parole, $hashParole)) {
-                $_SESSION['lietotajvards'] = $lietotajvards;
-                header("Location: index.php");
-                exit();
+            if ($result && mysqli_num_rows($result) === 1) {
+                $row = mysqli_fetch_assoc($result);
+                $hashParole = $row['Parole'];
+
+                if (!password_verify($parole, $hashParole)) {
+                    $kluda = "Nepareizs lietotājvārds vai parole.";
+                } elseif ($row['Statuss'] !== 'Aktīvs') {
+                    $kluda = "Tavs konts ir neaktīvs. Lūdzu, sazinies ar administratoru.";
+                } else {
+                    // Всё ок: логиним
+                    $_SESSION['lietotajvards'] = $lietotajvards;
+                    $_SESSION['loma'] = $row['Loma'];
+                    header("Location: index.php");
+                    exit();
+                }
             } else {
                 $kluda = "Nepareizs lietotājvārds vai parole.";
             }
+
+            mysqli_stmt_close($stmt);
         } else {
-            $kluda = "Nepareizs lietotājvārds vai parole.";
+            $kluda = "Kļūda datubāzes pieprasījumā.";
         }
     }
 }

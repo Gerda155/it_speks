@@ -46,7 +46,7 @@ html, body {
 }
 
 .logo img {
-    width: 225px;
+    width: 215px;
 }
 
 .admin-name {
@@ -527,7 +527,9 @@ input:focus {
 }
 
 .modal.hidden {
-  display: none;
+  visibility: hidden;
+  opacity: 0;
+  position: absolute; left: -9999px;
 }
 
 .modal-content {
@@ -661,7 +663,7 @@ td img {
     border-radius: 6px;
 }
 
-.action-buttons a {
+.action-buttons a, .btn-delete {
     margin-right: 8px;
     padding: 8px 12px;
     text-decoration: none;

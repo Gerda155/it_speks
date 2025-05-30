@@ -1,4 +1,10 @@
 <?php
+// Включаем ошибки PHP и MySQLi в лог
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/error.log'); // Лог в текущей папке, можно поменять путь
+
 session_start();
 
 if (!isset($_SESSION['lietotajvards'])) {
@@ -6,13 +12,48 @@ if (!isset($_SESSION['lietotajvards'])) {
     exit();
 }
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-require "../files/header.php";
 require "../files/database.php";
 
-// Разрешённые поля для сортировки
+$msg = '';
+
+// Удаление через GET
+if (isset($_GET['delete_id'])) {
+    $delete_id = intval($_GET['delete_id']);
+    error_log("DELETE requested for ID: $delete_id");
+
+    if ($delete_id > 0) {
+        $stmt = $savienojums->prepare("DELETE FROM it_speks_Lietotaji WHERE Lietotaj_ID = ?");
+        if ($stmt === false) {
+            error_log("Prepare kļūda: " . $savienojums->error);
+            $msg = "Neizdevās sagatavot dzēšanas pieprasījumu.";
+        } else {
+            $stmt->bind_param("i", $delete_id);
+            if ($stmt->execute()) {
+                error_log("Execute OK, affected rows: " . $stmt->affected_rows);
+                if ($stmt->affected_rows > 0) {
+                    // debug before redirect
+                    error_log("Redirecting after successful delete");
+                    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+                    exit();
+                } else {
+                    $msg = "Nav tādas ieraksta vai tas jau ir dzēsts.";
+                }
+            } else {
+                error_log("Execute kļūda: " . $stmt->error);
+                $msg = "Kļūda dzēšanas laikā.";
+            }
+            $stmt->close();
+        }
+    } else {
+        $msg = "Nederīgs ID dzēšanai.";
+    }
+}
+
+
+require "../files/header.php";
+
+// --- Далее остальной код без изменений ---
+
 $allowedSortFields = [
     'id' => 'Lietotaj_ID',
     'name' => 'Vards',
@@ -41,13 +82,11 @@ if (!empty($statusParam)) {
     }
 }
 
-// Пагинация
 $recordsPerPage = 7;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
     ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $recordsPerPage;
 
-// Считаем общее количество
 $countQuery = "
     SELECT COUNT(*) as total
     FROM it_speks_Lietotaji
@@ -61,7 +100,6 @@ if ($countResult) {
 }
 $totalPages = ceil($totalRecords / $recordsPerPage);
 
-// Основной запрос с лимитом и оффсетом
 $query = "
     SELECT Lietotaj_ID, Vards, Uzvards, Epasts, Lietotajvards, Izveides_datums, Statuss, Piezimes
     FROM it_speks_Lietotaji
@@ -74,6 +112,10 @@ $result = mysqli_query($savienojums, $query);
 ?>
 
 <main>
+    <?php if (!empty($msg)): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($msg) ?></div>
+    <?php endif; ?>
+
     <div class="table_header">
         <h1><i class="fa-solid fa-list"></i> <?= htmlspecialchars($title) ?></h1>
         <div class="sort-dropdown">
@@ -101,31 +143,39 @@ $result = mysqli_query($savienojums, $query);
             </tr>
         </thead>
         <tbody>
-            <?php
-            if (mysqli_num_rows($result) > 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($row['Vards'] ?? '') . "</td>";
-                    echo "<td>" . htmlspecialchars($row['Uzvards'] ?? '') . "</td>";
-                    echo "<td>" . htmlspecialchars($row['Epasts'] ?? '') . "</td>";
-                    echo "<td>" . htmlspecialchars($row['Lietotajvards'] ?? '') . "</td>";
-                    echo "<td>" . htmlspecialchars($row['Izveides_datums'] ?? '') . "</td>";
-                    echo "<td>" . htmlspecialchars($row['Piezimes'] ?? '') . "</td>";
-                    echo "<td class='action-buttons'><a href='regModeratori.php?id=" . $row['Lietotaj_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
-                    echo "<td class='action-buttons'><a href='regModeratori.php?id=" . $row['Lietotaj_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr><td colspan='9'>Nav pievienotu moderātoru.</td></tr>";
-            }
-            ?>
+            <?php if (mysqli_num_rows($result) > 0): ?>
+                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($row['Vards'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($row['Uzvards'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($row['Epasts'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($row['Lietotajvards'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($row['Izveides_datums'] ?? '') ?></td>
+                        <td><?= htmlspecialchars($row['Piezimes'] ?? '') ?></td>
+                        <td class='action-buttons'>
+                            <a href='regModeratori.php?id=<?= $row['Lietotaj_ID'] ?>' class='btn btn-edit'><i class='fas fa-edit'></i></a>
+                        </td>
+                        <td class='action-buttons'>
+                            <a href="?delete_id=<?= $row['Lietotaj_ID'] ?>"
+                                class="btn btn-delete"
+                                onclick="return confirm('Tiešām dzēst šo ierakstu?');">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan='9'>Nav pievienotu moderātoru.</td>
+                </tr>
+            <?php endif; ?>
         </tbody>
     </table>
+
     <div class="pagination">
         <?php if ($totalPages > 1): ?>
             <?php for ($p = 1; $p <= $totalPages; $p++): ?>
                 <?php
-                // Сохраняем get параметры sort и status для навигации
                 $params = $_GET;
                 $params['page'] = $p;
                 $queryString = http_build_query($params);
@@ -135,6 +185,7 @@ $result = mysqli_query($savienojums, $query);
         <?php endif; ?>
     </div>
 </main>
+
 <?php
 require "../files/footer.php";
 ?>

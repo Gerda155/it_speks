@@ -99,20 +99,23 @@ if ($result && mysqli_num_rows($result) === 1) {
                         <a class="dropdown-item" href="crudPieteikumi.php?status=Gaida atbildi">Gaida atbildi</a>
                     </div>
                 </li>
-                <li class="sidebar-item">
-                    <div class="sidebar-header">
-                        <div class="sidebar-label">
-                            <i class="fas fa-user-shield"></i><span>Moderatori</span>
+                <?php if (isset($_SESSION['loma']) && $_SESSION['loma'] === 'Administrators'): ?>
+                    <li class="sidebar-item">
+                        <div class="sidebar-header">
+                            <div class="sidebar-label">
+                                <i class="fas fa-user-shield"></i><span>Moderatori</span>
+                            </div>
+                            <div class="chevron-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
                         </div>
-                        <div class="chevron-icon">
-                            <i class="fas fa-chevron-down"></i>
+                        <div class="dropdown-content">
+                            <a class="dropdown-item" href="crudModeratori.php?status=Aktivs">Aktīvie</a><br>
+                            <a class="dropdown-item" href="crudModeratori.php?status=Neaktivs">Neaktīvie</a>
                         </div>
-                    </div>
-                    <div class="dropdown-content">
-                        <a class="dropdown-item" href="crudModeratori.php?status=Aktivs">Aktīvie</a><br>
-                        <a class="dropdown-item" href="crudModeratori.php?status=Neaktivs">Neaktīvie</a>
-                    </div>
-                </li>
+                    </li>
+                <?php endif; ?>
+
             </ul>
             <div class="sidebar-buttons">
                 <button class="edit-button" onclick="window.location.href='index.php'">Sākumlapa</button>

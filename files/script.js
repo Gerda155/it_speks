@@ -53,4 +53,3 @@ cancelBtn.addEventListener('click', e => {
     selectedId = null;
 });
 
-
