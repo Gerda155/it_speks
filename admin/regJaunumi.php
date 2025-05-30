@@ -209,7 +209,7 @@ $izvelētaisModeratorID = $isEdit ? $ziņa['Lietotaj_ID'] : null;
 
                 <input type="file" id="bilde" name="bilde" accept="image/*" />
 
-                <label for="datums">Дата публикации:</label>
+                <label for="datums">Publicēšanas datums:</label>
                 <input type="datetime-local" id="datums" name="datums"
                     value="<?= isset($ziņa['Publicesanas_datums']) && $ziņa['Publicesanas_datums'] ? date('Y-m-d\TH:i', strtotime($ziņa['Publicesanas_datums'])) : date('Y-m-d\TH:i') ?>" required>
 

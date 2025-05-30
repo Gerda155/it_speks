@@ -79,6 +79,16 @@ $vaicajums = "
 ";
 
 $rezultats = mysqli_query($savienojums, $vaicajums);
+
+// Удаление
+if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
+    $deleteId = (int)$_GET['delete'];
+    $deleteQuery = "DELETE FROM it_speks_Pieteiksanas WHERE Pieteiksanas_ID = $deleteId";
+    mysqli_query($savienojums, $deleteQuery);
+    header("Location: crudPieteikumi.php");
+    exit();
+}
+
 ?>
 
 <main>
@@ -120,14 +130,14 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
                     echo "<td>" . htmlspecialchars($row['Uzvards']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['Amata_nosaukums']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['Epasts']) . "</td>";
-                    echo "<td>" . htmlspecialchars(mb_strimwidth($row['Izglitiba'], 0, 20, '...')) . "</td>";
-                    echo "<td>" . htmlspecialchars(mb_strimwidth($row['Darba_pieredze'], 0, 20, '...')) . "</td>";
+                    echo "<td>" . htmlspecialchars(mb_strimwidth((string)$row['Izglitiba'], 0, 20, '...')) . "</td>";
+                    echo "<td>" . htmlspecialchars(mb_strimwidth((string)$row['Darba_pieredze'], 0, 20, '...')) . "</td>";
                     echo "<td>" . ($row['CV'] ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>') . "</td>";
                     echo "<td>" . htmlspecialchars($row['Pieteiksanas_datums']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['Statuss']) . "</td>";
                     echo "<td>" . ($row['Komentars'] ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>') . "</td>";
                     echo "<td class='action-buttons'><a href='regPieteikumi.php?id=" . $row['Pieteiksanas_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
-                    echo "<td class='action-buttons'><a href='regPieteikumi.php?id=" . $row['Pieteiksanas_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='crudPieteikumi.php?delete=" . $row['Pieteiksanas_ID'] . "' class='btn btn-delete' onclick=\"return confirm('Vai tiešām vēlies dzēst šo pieteikumu?');\"><i class='fas fa-trash'></i></a></td>";
                     echo "</tr>";
                 }
             } else {

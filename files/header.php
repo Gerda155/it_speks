@@ -5,7 +5,7 @@ if (!isset($_SESSION['lietotajvards'])) {
     exit();
 }
 
-require "../files/database.php"; // подключаем базу
+require "../files/database.php"; 
 
 $lietotajvards = $_SESSION['lietotajvards'];
 
@@ -34,7 +34,6 @@ if ($result && mysqli_num_rows($result) === 1) {
     <title>Admin Panelis</title>
     <link rel="stylesheet" href="../files/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <script src="../files/script.js" defer></script>
 </head>
 
 <body>

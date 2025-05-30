@@ -782,6 +782,7 @@ main {
 textarea {
     resize: vertical;
     min-height: 100px;
+    width: 100%;
 }
 
 .form-group input:disabled {
