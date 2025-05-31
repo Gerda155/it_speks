@@ -97,11 +97,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
 
         $lietotajsPilns = "$vardsLietotaja $uzvardsLietotaja";
-        $darbiba = "Rediģēts pieteikums: $vards $uzvards";
+        $darbiba = "Rediģēts";
+        $objekts = "Pieteikums ar ID $id";
 
-        // 👇 Добавлена запись в историю действий
         $stmt2 = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Objekts, Notikums, Datums, Lietotajs) VALUES (?, ?, NOW(), ?)");
-        $stmt2->bind_param("sss", $lietotajsPilns, $darbiba, $lietotajsPilns);
+        $stmt2->bind_param("sss", $objekts, $darbiba, $lietotajsPilns);
         $stmt2->execute();
         $stmt2->close();
     } else {
@@ -127,10 +127,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
 
         $lietotajsPilns = "$vardsLietotaja $uzvardsLietotaja";
-        $darbiba = "Izveidots pieteikums: $vards $uzvards";
+        $darbiba = "Izveidots";
+        $objekts = "Jauns pieteikums";
 
         $stmt2 = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Objekts, Notikums, Datums, Lietotajs) VALUES (?, ?, NOW(), ?)");
-        $stmt2->bind_param("sss", $lietotajsPilns, $darbiba, $lietotajsPilns);
+        $stmt2->bind_param("sss", $objekts, $darbiba, $lietotajsPilns);
         $stmt2->execute();
         $stmt2->close();
     }

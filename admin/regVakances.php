@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $stmt = $savienojums->prepare("INSERT INTO it_speks_Vakances (Lietotaj_ID, Amata_nosaukums, Uznemuma_nosaukums, Atrasanas_vieta, Alga, Prasibas, Darba_apraksts, Statuss, Publicesanas_datums, Beigu_datums, Tips, Bilde) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("isssdsssssss", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $bilde_data);
-        $objekts = "Vakance";
+        $objekts = "Jauna vakance";
         $notikums = "Pievienota";
     }
 

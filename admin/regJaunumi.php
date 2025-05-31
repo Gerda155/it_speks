@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     // Запись в историю
                     $objekts = 'Jaunums ar ID ' . $id;
-                    $notikums = 'Ziņa atjaunināta';
+                    $notikums = 'Rediģēts';
                     $date = date('Y-m-d H:i:s');
                     $stmtHist = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, ?)");
                     $stmtHist->bind_param("ssss", $currentUserFullName, $objekts, $notikums, $date);
@@ -118,11 +118,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmtInsert->bind_param("ssssss", $nosaukums, $text, $statuss, $imageData, $lietotaj_ID, $publicesanasDatums);
 
                 if ($stmtInsert->execute()) {
-                    $successMessage = "Ziņa veiksmīgi izveidota.";
+                    $successMessage = "Ziņa veiksmīgi pievienota";
                     $newId = $savienojums->insert_id;
 
-                    $objekts = 'Jaunums ar ID ' . $newId;
-                    $notikums = 'Jauna ziņa pievienota';
+                    $objekts = 'Jauns jaunums';
+                    $notikums = 'Pievienots';
                     $stmtHist = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, ?)");
                     $stmtHist->bind_param("ssss", $currentUserFullName, $objekts, $notikums, $publicesanasDatums);
                     $stmtHist->execute();

@@ -112,13 +112,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt = $savienojums->prepare("UPDATE it_speks_Lietotaji SET Vards=?, Uzvards=?, Epasts=?, Lietotajvards=?, Parole=?, Loma=?, Statuss=?, Piezimes=?, Talrunis=? WHERE Lietotaj_ID=?");
             $stmt->bind_param("sssssssssi", $vards, $uzvards, $epasts, $lietotajvards, $parole, $loma, $statuss, $piezimes, $talrunis, $id);
             $objekts = "Moderators ar ID $id";
-            $notikums = "Moderators rediģēts";
+            $notikums = "Rediģēts";
         } else {
             $izveides_datums = $datums;
             $stmt = $savienojums->prepare("INSERT INTO it_speks_Lietotaji (Vards, Uzvards, Epasts, Lietotajvards, Parole, Loma, Izveides_datums, Statuss, Piezimes, Talrunis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("ssssssssss", $vards, $uzvards, $epasts, $lietotajvards, $parole, $loma, $izveides_datums, $statuss, $piezimes, $talrunis);
-            $objekts = "Moderators ar vārdu $vards $uzvards";
-            $notikums = "Jauns moderators izveidots";
+            $objekts = "Jauns moderators";
+            $notikums = "Izveidots";
         }
 
         if ($stmt->execute()) {

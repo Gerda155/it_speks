@@ -13,7 +13,7 @@ if (!isset($_SESSION['lietotajvards'])) {
 require "../files/database.php";
 require "../files/header.php";
 
-$recordsPerPage = 10;
+$recordsPerPage = 7;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
     ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $recordsPerPage;
