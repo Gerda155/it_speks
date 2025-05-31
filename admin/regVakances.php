@@ -74,7 +74,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userData = $resUser->fetch_assoc();
     $currentUserId = $userData['Lietotaj_ID'];
     $currentUserFullName = $userData['Vards'] . ' ' . $userData['Uzvards'];
-    $izveletaisModeratorID = intval($_POST['moderators']);
+    if ($isEdit) {
+        $izveletaisModeratorID = intval($_POST['moderators']);
+    } else {
+        $izveletaisModeratorID = $currentUserId;
+    }
     $amata_nosaukums = $_POST['amata_nosaukums'];
     $uznemuma_nosaukums = $_POST['uznemuma_nosaukums'];
     $atrasanas_vieta = $_POST['atrasanas_vieta'];
@@ -131,15 +135,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form action="<?= $isEdit ? '?id=' . $id : '' ?>" method="POST" enctype="multipart/form-data" class="form-layout">
 
-                <label for="moderators">Lietotājs</label>
-                <select name="moderators" id="moderators" required>
-                    <option value="">-- Izvēlies moderatoru --</option>
-                    <?php foreach ($moderatori as $mod): ?>
-                        <option value="<?= $mod['Lietotaj_ID'] ?>" <?= ($mod['Lietotaj_ID'] == $izveletaisModeratorID) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($mod['Uzvards']) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <?php if ($isEdit): ?>
+                    <label for="moderators">Lietotājs</label>
+                    <select name="moderators" id="moderators" required>
+                        <option value="">-- Izvēlies moderatoru --</option>
+                        <?php foreach ($moderatori as $mod): ?>
+                            <option value="<?= $mod['Lietotaj_ID'] ?>" <?= ($mod['Lietotaj_ID'] == $izveletaisModeratorID) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($mod['Uzvards']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                <?php endif; ?>
+
 
                 <input
                     type="text"
