@@ -62,6 +62,7 @@ if ($result && mysqli_num_rows($result) === 1) {
                         </div>
                     </div>
                     <div class="dropdown-content">
+                        <a class="dropdown-item" href="crudJaunumi.php">Visi</a><br>
                         <a class="dropdown-item" href="crudJaunumi.php?status=Aktīvs">Aktīvie</a><br>
                         <a class="dropdown-item" href="crudJaunumi.php?status=Neaktivs">Arhīvs</a><br>
                         <a class="dropdown-item" href="crudJaunumi.php?status=Melnraksts">Melnraksti</a>
@@ -77,7 +78,8 @@ if ($result && mysqli_num_rows($result) === 1) {
                         </div>
                     </div>
                     <div class="dropdown-content">
-                        <a class="dropdown-item" href="crudVakances.php?status=Aktīvs">Aktīvie</a><br>
+                        <a class="dropdown-item" href="crudVakances.php">Visas</a><br>
+                        <a class="dropdown-item" href="crudVakances.php?status=Aktīvs">Aktīvas</a><br>
                         <a class="dropdown-item" href="crudVakances.php?status=Neaktivs">Arhīvs</a><br>
                         <a class="dropdown-item" href="crudVakances.php?status=Melnraksts">Melnraksti</a>
                     </div>
@@ -92,6 +94,7 @@ if ($result && mysqli_num_rows($result) === 1) {
                         </div>
                     </div>
                     <div class="dropdown-content">
+                        <a class="dropdown-item" href="crudPieteikumi.php">Visi</a><br>
                         <a class="dropdown-item" href="crudPieteikumi.php?status=Jauns">Jaunie</a><br>
                         <a class="dropdown-item" href="crudPieteikumi.php?status=Apstiprināts">Apstiprinātie</a><br>
                         <a class="dropdown-item" href="crudPieteikumi.php?status=Noraidīts">Noraidītie</a><br>
@@ -109,6 +112,7 @@ if ($result && mysqli_num_rows($result) === 1) {
                             </div>
                         </div>
                         <div class="dropdown-content">
+                            <a class="dropdown-item" href="crudModeratori.php">Visi</a><br>
                             <a class="dropdown-item" href="crudModeratori.php?status=Aktivs">Aktīvie</a><br>
                             <a class="dropdown-item" href="crudModeratori.php?status=Neaktivs">Neaktīvie</a>
                         </div>

@@ -31,7 +31,7 @@ if (isset($_GET['status'])) {
             $statusName = "Publicētie jaunumi";
             break;
         default:
-            $statusName = "Jaunumi";
+            $statusName = "Visi jaunumi";
             break;
     }
 } else {
