@@ -32,31 +32,14 @@
             window.location.search = urlParams.toString();
         }); //страница с сортировкой
 
-        /*______MODAL_________*/
-        const modal = document.getElementById('deleteModal');
-        const confirmBtn = document.getElementById('confirmDelete');
-        const cancelBtn = document.getElementById('cancelDelete');
-        let selectedId = null;
-
-        document.querySelectorAll('.btn-delete').forEach(button => {
-            button.addEventListener('click', e => {
-                e.preventDefault();
-                selectedId = button.getAttribute('data-id');
-                modal.classList.remove('hidden');
-            });
-        });
-
-        confirmBtn.addEventListener('click', e => {
-            e.preventDefault();
-            if (selectedId) {
-                window.location.href = `dzest.php?id=${selectedId}`;
+        // Автоматическое скрытие сообщения через 2 секунды
+        window.addEventListener('DOMContentLoaded', () => {
+            const message = document.getElementById('deleteMessage');
+            if (message) {
+                setTimeout(() => {
+                    message.style.display = 'none';
+                }, 2000);
             }
-        });
-
-        cancelBtn.addEventListener('click', e => {
-            e.preventDefault();
-            modal.classList.add('hidden');
-            selectedId = null;
         });
     </script>
     </body>

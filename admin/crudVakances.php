@@ -7,6 +7,25 @@ if (!isset($_SESSION['lietotajvards'])) {
 }
 
 require "../files/database.php";
+
+// Обработка удаления
+if (isset($_GET['delete_id'])) {
+    $delete_id = (int)$_GET['delete_id'];
+
+    // Защита: проверяем, существует ли такая запись
+    $checkQuery = "SELECT * FROM it_speks_Vakances WHERE Vakances_ID = $delete_id";
+    $checkResult = mysqli_query($savienojums, $checkQuery);
+
+    if (mysqli_num_rows($checkResult) > 0) {
+        // Удаление
+        $deleteQuery = "DELETE FROM it_speks_Vakances WHERE Vakances_ID = $delete_id";
+        mysqli_query($savienojums, $deleteQuery);
+        // Перенаправление, чтобы избежать повторного удаления при обновлении
+        header("Location: crudVakances.php?deleted=1");
+        exit();
+    }
+}
+
 require "../files/header.php";
 
 $statusFilter = "";
@@ -82,7 +101,9 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
             </select>
         </div>
     </div>
-
+    <?php if (isset($_GET['deleted'])): ?>
+        <p id="deleteMessage" style="color: green;">Vakance veiksmīgi dzēsta.</p>
+    <?php endif; ?>
     <table>
         <thead>
             <tr>
@@ -119,7 +140,7 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
                         echo "<td><i class='fa-solid fa-xmark'></i></td>";
                     }
                     echo "<td class='action-buttons'><a href='regVakances.php?id=" . $row['Vakances_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
-                    echo "<td class='action-buttons'><a href='?delete=" . $row['Vakances_ID'] . "' onclick='return confirm(\"Vai tiešām dzēst šo vakanci?\")' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='crudVakances.php?delete_id=" . $row['Vakances_ID'] . "' class='btn btn-delete' onclick=\"return confirm('Vai tiešām vēlies dzēst šo vakanci?');\"><i class='fas fa-trash'></i></a></td>";
                     echo "</tr>";
                 }
             } else {

@@ -9,8 +9,27 @@ if (!isset($_SESSION['lietotajvards'])) {
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require "../files/header.php";
 require "../files/database.php";
+
+// Обработка удаления
+if (isset($_GET['delete_id'])) {
+    $delete_id = (int)$_GET['delete_id'];
+
+    // Защита: проверяем, существует ли такая запись
+    $checkQuery = "SELECT * FROM it_speks_Pieteiksanas WHERE Pieteiksanas_ID = $delete_id";
+    $checkResult = mysqli_query($savienojums, $checkQuery);
+
+    if (mysqli_num_rows($checkResult) > 0) {
+        // Удаление
+        $deleteQuery = "DELETE FROM it_speks_Pieteiksanas WHERE Pieteiksanas_ID = $delete_id";
+        mysqli_query($savienojums, $deleteQuery);
+        // Перенаправление, чтобы избежать повторного удаления при обновлении
+        header("Location: crudPieteikumi.php?deleted=1");
+        exit();
+    }
+}
+
+require "../files/header.php";
 
 $statusFilter = "";
 if (isset($_GET['status'])) {
@@ -92,6 +111,9 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
             </select>
         </div>
     </div>
+    <?php if (isset($_GET['deleted'])): ?>
+        <p id="deleteMessage" style="color: green;">Pieteikums veiksmīgi dzēsts.</p>
+    <?php endif; ?>
     <table>
         <thead>
             <tr>
@@ -125,7 +147,7 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
                     echo "<td>" . htmlspecialchars($row['Statuss']) . "</td>";
                     echo "<td>" . ($row['Komentars'] ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>') . "</td>";
                     echo "<td class='action-buttons'><a href='regPieteikumi.php?id=" . $row['Pieteiksanas_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
-                    echo "<td class='action-buttons'><a href='crudPieteikumi.php?delete=" . $row['Pieteiksanas_ID'] . "' class='btn btn-delete' onclick=\"return confirm('Vai tiešām vēlies dzēst šo pieteikumu?');\"><i class='fas fa-trash'></i></a></td>";
+                    echo "<td class='action-buttons'><a href='crudPieteikumi.php?delete_id=" . $row['Pieteiksanas_ID'] . "' class='btn btn-delete' onclick=\"return confirm('Vai tiešām vēlies dzēst šo pieteikumu?');\"><i class='fas fa-trash'></i></a></td>";
                     echo "</tr>";
                 }
             } else {

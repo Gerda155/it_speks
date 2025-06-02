@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/error.log'); // Лог в текущей папке, можно поменять путь
+ini_set('error_log', __DIR__ . '/error.log');
 
 session_start();
 
@@ -14,12 +14,27 @@ if (!isset($_SESSION['lietotajvards'])) {
 
 require "../files/database.php";
 
-$msg = '';
+// Обработка удаления
+if (isset($_GET['delete_id'])) {
+    $delete_id = (int)$_GET['delete_id'];
 
+    // Защита: проверяем, существует ли такая запись
+    $checkQuery = "SELECT * FROM it_speks_Lietotaji WHERE Lietotaj_ID = $delete_id";
+    $checkResult = mysqli_query($savienojums, $checkQuery);
+
+    if (mysqli_num_rows($checkResult) > 0) {
+        // Удаление
+        $deleteQuery = "DELETE FROM it_speks_Lietotaji WHERE Lietotaj_ID = $delete_id";
+        mysqli_query($savienojums, $deleteQuery);
+        // Перенаправление, чтобы избежать повторного удаления при обновлении
+        header("Location: crudModeratori.php?deleted=1");
+        exit();
+    }
+}
 
 require "../files/header.php";
 
-
+// Сортировка
 $allowedSortFields = [
     'id' => 'Lietotaj_ID',
     'name' => 'Uzvards',
@@ -29,6 +44,7 @@ $allowedSortFields = [
 $sortParam = $_GET['sort'] ?? 'id';
 $sortField = $allowedSortFields[$sortParam] ?? 'Lietotaj_ID';
 
+// Фильтр по статусу
 $statusParam = $_GET['status'] ?? '';
 $statusFilter = '';
 if (!empty($statusParam)) {
@@ -36,6 +52,7 @@ if (!empty($statusParam)) {
     $statusFilter = "AND Statuss = '$status'";
 }
 
+// Заголовок страницы
 $title = "Visi moderatori";
 if (!empty($statusParam)) {
     switch ($statusParam) {
@@ -48,11 +65,13 @@ if (!empty($statusParam)) {
     }
 }
 
+// Пагинация
 $recordsPerPage = 7;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
     ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $recordsPerPage;
 
+// Подсчёт общего количества
 $countQuery = "
     SELECT COUNT(*) as total
     FROM it_speks_Lietotaji
@@ -66,6 +85,7 @@ if ($countResult) {
 }
 $totalPages = ceil($totalRecords / $recordsPerPage);
 
+// Основной запрос
 $query = "
     SELECT Lietotaj_ID, Vards, Uzvards, Epasts, Lietotajvards, Izveides_datums, Statuss, Piezimes
     FROM it_speks_Lietotaji
@@ -73,15 +93,10 @@ $query = "
     ORDER BY $sortField DESC
     LIMIT $recordsPerPage OFFSET $offset
 ";
-
 $result = mysqli_query($savienojums, $query);
 ?>
 
 <main>
-    <?php if (!empty($msg)): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($msg) ?></div>
-    <?php endif; ?>
-
     <div class="table_header">
         <h1><i class="fa-solid fa-list"></i> <?= htmlspecialchars($title) ?></h1>
         <div class="sort-dropdown">
@@ -93,6 +108,10 @@ $result = mysqli_query($savienojums, $query);
             </select>
         </div>
     </div>
+
+    <?php if (!empty($msg)): ?>
+        <p id="deleteMessage" style="color: green;">Moderators veiksmīgi dzēsts.</p>
+    <?php endif; ?>
 
     <table>
         <thead>
