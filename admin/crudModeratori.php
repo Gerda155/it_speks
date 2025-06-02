@@ -52,11 +52,10 @@ if (isset($_GET['delete_id'])) {
 
 require "../files/header.php";
 
-// --- Далее остальной код без изменений ---
 
 $allowedSortFields = [
     'id' => 'Lietotaj_ID',
-    'name' => 'Vards',
+    'name' => 'Uzvards',
     'date' => 'Izveides_datums'
 ];
 
@@ -122,8 +121,7 @@ $result = mysqli_query($savienojums, $query);
             <a href="regModeratori.php" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort" onchange="location.href='?sort=' + this.value">
-                <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>
-                <option value="name" <?= $sortParam === 'name' ? 'selected' : '' ?>>Nosaukums</option>
+                <option value="name" <?= $sortParam === 'name' ? 'selected' : '' ?>>Uzvards</option>
                 <option value="date" <?= $sortParam === 'date' ? 'selected' : '' ?>>Datums</option>
             </select>
         </div>

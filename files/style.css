@@ -838,5 +838,5 @@ textarea {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--main)/* При наведении */
+  background: var(--main)
 }

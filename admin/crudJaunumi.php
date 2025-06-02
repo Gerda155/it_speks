@@ -40,7 +40,6 @@ if (isset($_GET['status'])) {
 
 // Разрешённые поля для сортировки
 $allowedSortFields = [
-    'id' => 'Jaunumi_ID',
     'nosaukums' => 'Nosaukums',
     'datums' => 'Publicesanas_datums'
 ];
@@ -77,7 +76,6 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
             <a href="regJaunumi.php" class='add-button' title="Pievienot jaunumu"><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort">
-                <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>
                 <option value="nosaukums" <?= $sortParam === 'nosaukums' ? 'selected' : '' ?>>Nosaukums</option>
                 <option value="datums" <?= $sortParam === 'datums' ? 'selected' : '' ?>>Datums</option>
             </select>

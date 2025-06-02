@@ -39,8 +39,7 @@ if (isset($_GET['status'])) {
 }
 
 $allowedSortFields = [
-    'id' => 'p.Pieteiksanas_ID',
-    'name' => 'p.Vards',
+    'name' => 'p.Uzvards',
     'date' => 'p.Pieteiksanas_datums'
 ];
 
@@ -98,8 +97,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
             <a href="regPieteikumi.php" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort" onchange="location.href='?sort=' + this.value + '<?= isset($_GET['status']) ? '&status=' . $_GET['status'] : '' ?>'">
-                <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>
-                <option value="name" <?= $sortParam === 'name' ? 'selected' : '' ?>>Vārds</option>
+                <option value="name" <?= $sortParam === 'name' ? 'selected' : '' ?>>Uzvārds</option>
                 <option value="date" <?= $sortParam === 'date' ? 'selected' : '' ?>>Datums</option>
             </select>
         </div>

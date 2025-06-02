@@ -47,8 +47,8 @@ if (isset($_GET['status'])) {
 }
 
 $allowedSortFields = [
-    'id' => 'Vakances_ID',
-    'name' => 'Nosaukums',
+    'name' => 'Amata_nosaukums',
+    'uz_name' => 'Uznemuma_nosaukums',
     'date' => 'Publicesanas_datums'
 ];
 
@@ -90,8 +90,8 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
             <a href="regVakances.php" class='add-button'><i class="fa-solid fa-square-plus"></i></a>
             <label for="sort"><i class="fa-solid fa-filter"></i> Kārtot pēc:</label>
             <select id="sort">
-                <option value="id" <?= $sortParam === 'id' ? 'selected' : '' ?>>ID</option>
-                <option value="name" <?= $sortParam === 'name' ? 'selected' : '' ?>>Nosaukums</option>
+                <option value="name" <?= $sortParam === 'name' ? 'selected' : '' ?>>Amats</option>
+                <option value="uz_name" <?= $sortParam === 'name' ? 'selected' : '' ?>>Uzņemūms</option>
                 <option value="date" <?= $sortParam === 'date' ? 'selected' : '' ?>>Datums</option>
             </select>
         </div>
