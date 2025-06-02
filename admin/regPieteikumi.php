@@ -13,7 +13,9 @@ ini_set('display_errors', 1);
 require "../files/header.php";
 require "../files/database.php";
 
-// Определение: редактируем или создаём
+$errorMessage = '';
+$successMessage = '';
+
 $isEdit = isset($_GET['id']) && is_numeric($_GET['id']);
 $id = $isEdit ? intval($_GET['id']) : null;
 
@@ -30,96 +32,128 @@ $pieteikums = [
     'Statuss' => 'Jauns'
 ];
 
-// Получаем данные из БД, если редактируем
+// Если редактирование — загружаем заявку
 if ($isEdit) {
     $query = "SELECT * FROM it_speks_Pieteiksanas WHERE Pieteiksanas_ID = $id LIMIT 1";
     $result = mysqli_query($savienojums, $query);
-
     if ($result && mysqli_num_rows($result) > 0) {
         $pieteikums = mysqli_fetch_assoc($result);
     } else {
-        echo "<p style='color: red; text-align: center;'>Pieteikums nav atrasts</p>";
+        $errorMessage = "Pieteikums nav atrasts.";
         $isEdit = false;
     }
 }
 
-// Получаем вакансии
-$vakancesResult = mysqli_query($savienojums, "SELECT Vakances_ID, Amata_nosaukums FROM it_speks_Vakances");
+// Получаем список вакансий
 $vakances = [];
+$vakancesResult = mysqli_query($savienojums, "SELECT Vakances_ID, Amata_nosaukums FROM it_speks_Vakances");
 while ($row = mysqli_fetch_assoc($vakancesResult)) {
     $vakances[] = $row;
 }
 
+// === ОБРАБОТКА POST ===
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $vards = mysqli_real_escape_string($savienojums, $_POST['vards']);
     $uzvards = mysqli_real_escape_string($savienojums, $_POST['uzvards']);
     $epasts = mysqli_real_escape_string($savienojums, $_POST['epasts']);
-    $vakances_id = (int)$_POST['vakances_id'];
-    $statuss = mysqli_real_escape_string($savienojums, $_POST['statuss']);
-    $datums = date("Y-m-d");
-    $cv_type = $_POST['cv_type'];
     $talrunis = mysqli_real_escape_string($savienojums, $_POST['talrunis']);
     $komentars = mysqli_real_escape_string($savienojums, $_POST['komentars']);
+    $vakances_id = (int)$_POST['vakances_id'];
+    $statuss = mysqli_real_escape_string($savienojums, $_POST['statuss']);
+    $cv_type = $_POST['cv_type'];
 
     $izglitiba = null;
     $darba_pieredze = null;
     $cvBlob = null;
 
-    if ($cv_type === 'file' && isset($_FILES['cv']) && $_FILES['cv']['error'] === UPLOAD_ERR_OK) {
-        $cvBlob = addslashes(file_get_contents($_FILES['cv']['tmp_name']));
-    } elseif ($cv_type === 'manual') {
-        $izglitiba = mysqli_real_escape_string($savienojums, $_POST['izglitiba']);
-        $darba_pieredze = mysqli_real_escape_string($savienojums, $_POST['darba_pieredze']);
-    }
-
-    if ($isEdit) {
-        // Начало запроса
-        $updateParts = [
-            "Vards='$vards'",
-            "Uzvards='$uzvards'",
-            "Epasts='$epasts'",
-            "Talrunis='$talrunis'",
-            "Komentars='$komentars'",
-            "Vakances_ID=$vakances_id",
-            "Statuss='$statuss'"
-        ];
-
-        // Обработка CV/мануальных данных
-        if ($cv_type === 'file' && $cvBlob !== null) {
-            $updateParts[] = "CV='$cvBlob'";
-            $updateParts[] = "Izglitiba=NULL";
-            $updateParts[] = "Darba_pieredze=NULL";
-        } elseif ($cv_type === 'manual' && (!empty($_POST['izglitiba']) || !empty($_POST['darba_pieredze']))) {
-            $updateParts[] = "Izglitiba=" . ($izglitiba !== null ? "'$izglitiba'" : "NULL");
-            $updateParts[] = "Darba_pieredze=" . ($darba_pieredze !== null ? "'$darba_pieredze'" : "NULL");
-            $updateParts[] = "CV=NULL";
+    if (empty($vards) || empty($uzvards) || empty($epasts)) {
+        $errorMessage = "Lūdzu, aizpildi visus obligātos laukus: Vārds, Uzvārds, E-pasts.";
+    } else {
+        if ($cv_type === 'file' && isset($_FILES['cv']) && $_FILES['cv']['error'] === UPLOAD_ERR_OK) {
+            $cvBlob = addslashes(file_get_contents($_FILES['cv']['tmp_name']));
+        } elseif ($cv_type === 'manual') {
+            $izglitiba = mysqli_real_escape_string($savienojums, $_POST['izglitiba']);
+            $darba_pieredze = mysqli_real_escape_string($savienojums, $_POST['darba_pieredze']);
         }
 
-        // Собираем итоговый запрос
-        $updateQuery = "UPDATE it_speks_Pieteiksanas SET " . implode(", ", $updateParts) . " WHERE Pieteiksanas_ID=$id";
-        mysqli_query($savienojums, $updateQuery);
+        if ($isEdit) {
+            // === ОБНОВЛЕНИЕ ===
+            $updateParts = [
+                "Vards='$vards'",
+                "Uzvards='$uzvards'",
+                "Epasts='$epasts'",
+                "Talrunis='$talrunis'",
+                "Komentars='$komentars'",
+                "Vakances_ID=$vakances_id",
+                "Statuss='$statuss'"
+            ];
 
-        // Логирование
-        $lietotajvards = $_SESSION['lietotajvards'];
-        $stmt = $savienojums->prepare("SELECT Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?");
-        $stmt->bind_param("s", $lietotajvards);
-        $stmt->execute();
-        $stmt->bind_result($vardsLietotaja, $uzvardsLietotaja);
-        $stmt->fetch();
-        $stmt->close();
+            if ($cv_type === 'file' && $cvBlob !== null) {
+                $updateParts[] = "CV='$cvBlob'";
+                $updateParts[] = "Izglitiba=NULL";
+                $updateParts[] = "Darba_pieredze=NULL";
+            } elseif ($cv_type === 'manual') {
+                $updateParts[] = "Izglitiba=" . ($izglitiba ? "'$izglitiba'" : "NULL");
+                $updateParts[] = "Darba_pieredze=" . ($darba_pieredze ? "'$darba_pieredze'" : "NULL");
+                $updateParts[] = "CV=NULL";
+            }
 
-        $lietotajsPilns = "$vardsLietotaja $uzvardsLietotaja";
-        $darbiba = "Rediģēts";
-        $objekts = "Pieteikums ar ID $id";
+            $updateQuery = "UPDATE it_speks_Pieteiksanas SET " . implode(", ", $updateParts) . " WHERE Pieteiksanas_ID=$id";
+            mysqli_query($savienojums, $updateQuery);
 
-        $stmt2 = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Objekts, Notikums, Datums, Lietotajs) VALUES (?, ?, NOW(), ?)");
-        $stmt2->bind_param("sss", $objekts, $darbiba, $lietotajsPilns);
-        $stmt2->execute();
-        $stmt2->close();
+            $objekts = "Pieteikums ar ID $id";
+            $darbiba = "Rediģēts";
+        } else {
+            // === СОЗДАНИЕ ===
+            $insertQuery = "INSERT INTO it_speks_Pieteiksanas 
+        (Vards, Uzvards, Epasts, Talrunis, Izglitiba, Darba_pieredze, CV, Komentars, Vakances_ID, Statuss, Pieteiksanas_datums)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
+
+            $stmt = $savienojums->prepare($insertQuery);
+            $stmt->bind_param(
+                "ssssssssis",
+                $vards,
+                $uzvards,
+                $epasts,
+                $talrunis,
+                $izglitiba,
+                $darba_pieredze,
+                $cvBlob,
+                $komentars,
+                $vakances_id,
+                $statuss
+            );
+
+            if ($stmt->execute()) {
+                $id = $stmt->insert_id;
+                $objekts = "Pieteikums ar ID $id";
+                $darbiba = "Izveidots";
+            } else {
+                $errorMessage = "Kļūda saglabājot pieteikumu: " . $stmt->error;
+            }
+            $stmt->close();
+        }
+
+        // === ЛОГИРОВАНИЕ ===
+        if (empty($errorMessage)) {
+            $lietotajvards = $_SESSION['lietotajvards'];
+            $stmtUser = $savienojums->prepare("SELECT Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?");
+            $stmtUser->bind_param("s", $lietotajvards);
+            $stmtUser->execute();
+            $stmtUser->bind_result($vardsLietotaja, $uzvardsLietotaja);
+            $stmtUser->fetch();
+            $stmtUser->close();
+
+            $lietotajsPilns = "$vardsLietotaja $uzvardsLietotaja";
+
+            $stmtLog = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Objekts, Notikums, Datums, Lietotajs) VALUES (?, ?, NOW(), ?)");
+            $stmtLog->bind_param("sss", $objekts, $darbiba, $lietotajsPilns);
+            $stmtLog->execute();
+            $stmtLog->close();
+
+            $successMessage = $isEdit ? "Pieteikums veiksmīgi atjaunināts." : "Pieteikums veiksmīgi izveidots.";
+        }
     }
-
-    header("Location: crudPieteikumi.php");
-    exit();
 }
 ?>
 
@@ -127,7 +161,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="form-grid-card center">
         <div class="login-box">
             <h1><?= $isEdit ? "Rediģēt pieteikumu" : "Izveidot jaunu pieteikumu" ?></h1>
-            <p class="login-subtitle">Aizpildi visus laukus</p>
+            <?php if ($successMessage): ?>
+                <p style="color: green; font-weight: bold;"><?= htmlspecialchars($successMessage) ?></p>
+            <?php elseif ($errorMessage): ?>
+                <p style="color: red; font-weight: bold;"><?= htmlspecialchars($errorMessage) ?></p>
+            <?php endif; ?>
 
             <form action="<?= $isEdit ? '?id=' . $id : '' ?>" method="POST" enctype="multipart/form-data">
                 <input type="text" name="vards" placeholder="Vārds" value="<?= htmlspecialchars($pieteikums['Vards'] ?? '') ?>" required />
@@ -182,6 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i class="fas <?= $isEdit ? 'fa-save' : 'fa-plus-circle' ?>"></i>
                     <?= $isEdit ? 'Saglabāt izmaiņas' : 'Izveidot pieteikumu' ?>
                 </button>
+                <a href="crudPieteikumi.php" class="back-to-main"><i class="fas fa-arrow-left"></i> Atpakaļ</a>
             </form>
         </div>
     </div>

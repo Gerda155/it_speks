@@ -86,7 +86,7 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
         <thead>
             <tr>
                 <th>Nosaukums</th>
-                <th>Text</th>
+                <th>Teksts</th>
                 <th>Attēls</th>
                 <th>Publicēšanas datums</th>
                 <th>Rediģēt</th>
@@ -104,7 +104,7 @@ $rezultats = mysqli_query($savienojums, $vaicajums);
                     $attels = $rinda['Bilde'] !== null ? base64_encode($rinda['Bilde']) : null;
                     echo "<td>" . ($attels ? "<i class='fa-solid fa-check'></i>" : "<i class='fa-solid fa-xmark'></i>") . "</td>";
 
-                    echo "<td>" . htmlspecialchars($rinda['Publicesanas_datums']) . "</td>";
+                    echo "<td>" . htmlspecialchars($rinda['Publicesanas_datums'] ?? '') . "</td>";
                     echo "<td class='action-buttons'><a href='regJaunumi.php?id=" . $rinda['Jaunumi_ID'] . "' class='btn btn-edit'><i class='fas fa-edit'></i></a></td>";
                     echo "<td class='action-buttons'><a href='regJaunumi?id=" . $rinda['Jaunumi_ID'] . "' class='btn btn-delete'><i class='fas fa-trash'></i></a></td>";
                     echo "</tr>";

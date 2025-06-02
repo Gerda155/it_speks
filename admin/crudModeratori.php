@@ -16,39 +16,6 @@ require "../files/database.php";
 
 $msg = '';
 
-// Удаление через GET
-if (isset($_GET['delete_id'])) {
-    $delete_id = intval($_GET['delete_id']);
-    error_log("DELETE requested for ID: $delete_id");
-
-    if ($delete_id > 0) {
-        $stmt = $savienojums->prepare("DELETE FROM it_speks_Lietotaji WHERE Lietotaj_ID = ?");
-        if ($stmt === false) {
-            error_log("Prepare kļūda: " . $savienojums->error);
-            $msg = "Neizdevās sagatavot dzēšanas pieprasījumu.";
-        } else {
-            $stmt->bind_param("i", $delete_id);
-            if ($stmt->execute()) {
-                error_log("Execute OK, affected rows: " . $stmt->affected_rows);
-                if ($stmt->affected_rows > 0) {
-                    // debug before redirect
-                    error_log("Redirecting after successful delete");
-                    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
-                    exit();
-                } else {
-                    $msg = "Nav tādas ieraksta vai tas jau ir dzēsts.";
-                }
-            } else {
-                error_log("Execute kļūda: " . $stmt->error);
-                $msg = "Kļūda dzēšanas laikā.";
-            }
-            $stmt->close();
-        }
-    } else {
-        $msg = "Nederīgs ID dzēšanai.";
-    }
-}
-
 
 require "../files/header.php";
 

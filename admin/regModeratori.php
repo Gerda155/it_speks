@@ -54,6 +54,7 @@ if ($isEdit) {
 }
 
 $errorMessage = '';
+$successMessage = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $vards = trim($_POST['vards']);
@@ -113,12 +114,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->bind_param("sssssssssi", $vards, $uzvards, $epasts, $lietotajvards, $parole, $loma, $statuss, $piezimes, $talrunis, $id);
             $objekts = "Moderators ar ID $id";
             $notikums = "Rediģēts";
+            $successMessage = "Ziņa veiksmīgi atjaunināta";
         } else {
             $izveides_datums = $datums;
             $stmt = $savienojums->prepare("INSERT INTO it_speks_Lietotaji (Vards, Uzvards, Epasts, Lietotajvards, Parole, Loma, Izveides_datums, Statuss, Piezimes, Talrunis) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->bind_param("ssssssssss", $vards, $uzvards, $epasts, $lietotajvards, $parole, $loma, $izveides_datums, $statuss, $piezimes, $talrunis);
             $objekts = "Jauns moderators";
             $notikums = "Izveidots";
+            $successMessage = "Ziņa veiksmīgi pievienota";
         }
 
         if ($stmt->execute()) {
@@ -127,8 +130,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmtHist->bind_param("ssss", $currentUserFullName, $objekts, $notikums, $datums);
             $stmtHist->execute();
 
-            header("Location: crudModeratori.php?msg=success");
-            exit();
         } else {
             $errorMessage = "Kļūda datu saglabāšanā.";
         }
@@ -143,9 +144,10 @@ ob_end_flush();
     <div class="form-grid-card center">
         <div class="login-box">
             <h1><?= $isEdit ? "Rediģēt moderatoru" : "Izveidot jaunu moderatoru" ?></h1>
-            <p class="login-subtitle">Aizpildi visus laukus</p>
-            <?php if ($errorMessage): ?>
-                <p style="color: red; text-align: center;"><?= htmlspecialchars($errorMessage) ?></p>
+            <?php if ($successMessage): ?>
+                <p style="color: green; font-weight: bold;"><?= htmlspecialchars($successMessage) ?></p>
+            <?php elseif ($errorMessage): ?>
+                <p style="color: red; font-weight: bold;"><?= htmlspecialchars($errorMessage) ?></p>
             <?php endif; ?>
 
             <form id="moderatorForm" action="<?= $isEdit ? '?id=' . $id : '' ?>" method="POST" class="form-layout">
@@ -182,6 +184,7 @@ ob_end_flush();
                     <i class="fas <?= $isEdit ? 'fa-save' : 'fa-plus-circle' ?>"></i>
                     <?= $isEdit ? 'Saglabāt izmaiņas' : 'Izveidot moderatoru' ?>
                 </button>
+                <a href="crudModeratori.php" class="back-to-main"><i class="fas fa-arrow-left"></i> Atpakaļ</a>
             </form>
         </div>
     </div>

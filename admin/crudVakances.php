@@ -7,20 +7,6 @@ if (!isset($_SESSION['lietotajvards'])) {
 }
 
 require "../files/database.php";
-
-// Удаление вакансии
-if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
-    $deleteId = intval($_GET['delete']);
-    $deleteSql = "DELETE FROM it_speks_Vakances WHERE Vakances_ID = $deleteId LIMIT 1";
-    if (mysqli_query($savienojums, $deleteSql)) {
-        header("Location: crudVakances.php?success=deleted");
-        exit();
-    } else {
-        echo "<p style='color:red; text-align:center;'>Kļūda dzēšot vakanci: " . mysqli_error($savienojums) . "</p>";
-    }
-}
-
-
 require "../files/header.php";
 
 $statusFilter = "";

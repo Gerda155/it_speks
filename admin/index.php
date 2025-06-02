@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['lietotajvards'])) {
-    header("Location: login.php"); 
+    header("Location: login.php");
     exit();
 }
 
@@ -39,21 +39,21 @@ $changes = mysqli_fetch_all($changesResult, MYSQLI_ASSOC);
                     <h3><i class="fas fa-inbox"></i> Jaunie</h3>
                     <p><?= $countNew ?> pieteikumi</p>
                 </div>
-                <div class="progress-circle" data-value="<?= $countAll ? round(($countNew/$countAll)*100) : 0 ?>"></div>
+                <div class="progress-circle" data-value="<?= $countAll ? round(($countNew / $countAll) * 100) : 0 ?>"></div>
             </div>
             <div class="card">
                 <div class="card-info">
                     <h3><i class="fas fa-check"></i> Apstiprinātie</h3>
                     <p><?= $countApproved ?> pieteikumi</p>
                 </div>
-                <div class="progress-circle" data-value="<?= $countAll ? round(($countApproved/$countAll)*100) : 0 ?>"></div>
+                <div class="progress-circle" data-value="<?= $countAll ? round(($countApproved / $countAll) * 100) : 0 ?>"></div>
             </div>
             <div class="card">
                 <div class="card-info">
                     <h3><i class="fas fa-times"></i> Noraidītie</h3>
                     <p><?= $countRejected ?> pieteikumi</p>
                 </div>
-                <div class="progress-circle" data-value="<?= $countAll ? round(($countRejected/$countAll)*100) : 0 ?>"></div>
+                <div class="progress-circle" data-value="<?= $countAll ? round(($countRejected / $countAll) * 100) : 0 ?>"></div>
             </div>
         </div>
     </section>
@@ -116,7 +116,9 @@ require "../files/footer.php";
         },
         options: {
             scales: {
-                y: { beginAtZero: true }
+                y: {
+                    beginAtZero: true
+                }
             }
         }
     });

@@ -78,16 +78,6 @@ $vaicajums = "
 ";
 
 $rezultats = mysqli_query($savienojums, $vaicajums);
-
-// Удаление
-if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
-    $deleteId = (int)$_GET['delete'];
-    $deleteQuery = "DELETE FROM it_speks_Pieteiksanas WHERE Pieteiksanas_ID = $deleteId";
-    mysqli_query($savienojums, $deleteQuery);
-    header("Location: crudPieteikumi.php");
-    exit();
-}
-
 ?>
 
 <main>
@@ -128,8 +118,8 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
                     echo "<td>" . htmlspecialchars($row['Uzvards']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['Amata_nosaukums']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['Epasts']) . "</td>";
-                    echo "<td>" . htmlspecialchars(mb_strimwidth((string)$row['Izglitiba'], 0, 20, '...')) . "</td>";
-                    echo "<td>" . htmlspecialchars(mb_strimwidth((string)$row['Darba_pieredze'], 0, 20, '...')) . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Izglitiba'] ?? "") . "</td>";
+                    echo "<td>" . htmlspecialchars($row['Darba_pieredze'] ?? "") . "</td>";
                     echo "<td>" . ($row['CV'] ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>') . "</td>";
                     echo "<td>" . htmlspecialchars($row['Pieteiksanas_datums']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['Statuss']) . "</td>";

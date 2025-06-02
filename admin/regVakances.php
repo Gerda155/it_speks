@@ -10,6 +10,9 @@ if (!isset($_SESSION['lietotajvards'])) {
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+$errorMessage = '';
+$successMessage = '';
+
 require "../files/header.php";
 require "../files/database.php";
 
@@ -32,24 +35,24 @@ $imagePreview = "";
 
 if ($isEdit) {
     $id = intval($_GET['id']);
-    $stmt = $savienojums->prepare("SELECT Lietotaj_ID, Amata_nosaukums, Uznemuma_nosaukums, Atrasanas_vieta, Alga, Prasibas, Darba_apraksts, Statuss, Publicesanas_datums, Beigu_datums, Tips, Bilde FROM it_speks_Vakances WHERE Vakances_ID = ? LIMIT 1");
+    $stmt = $savienojums->prepare("SELECT * FROM it_speks_Vakances WHERE Vakances_ID = ? LIMIT 1");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result && $result->num_rows > 0) {
         $vakance = $result->fetch_assoc();
-
         if (!empty($vakance['Bilde'])) {
             $base64 = base64_encode($vakance['Bilde']);
             $imagePreview = '<img src="data:image/jpeg;base64,' . $base64 . '" alt="Pašreizējais attēls" style="max-width:100%; margin-bottom: 10px; border-radius: 8px;">';
         }
     } else {
-        echo "<p style='color: red; text-align: center;'>Vakance nav atrasta</p>";
+        $errorMessage = "Vakance nav atrasta.";
         $isEdit = false;
     }
 }
 
+// Получение списка модераторов
 $moderatori = [];
 $modQuery = "SELECT Lietotaj_ID, Vards, Uzvards FROM it_speks_Lietotaji ORDER BY Uzvards ASC";
 $modResult = mysqli_query($savienojums, $modQuery);
@@ -64,74 +67,79 @@ $izveletaisModeratorID = $isEdit ? intval($vakance['Lietotaj_ID']) : intval($_SE
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $datums = date("Y-m-d H:i:s");
     $currentUsername = $_SESSION['lietotajvards'];
+
     $stmtUser = $savienojums->prepare("SELECT Lietotaj_ID, Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?");
     $stmtUser->bind_param("s", $currentUsername);
     $stmtUser->execute();
     $resUser = $stmtUser->get_result();
     if ($resUser->num_rows === 0) {
-        die("Lietotājs nav atrasts.");
-    }
-    $userData = $resUser->fetch_assoc();
-    $currentUserId = $userData['Lietotaj_ID'];
-    $currentUserFullName = $userData['Vards'] . ' ' . $userData['Uzvards'];
-    if ($isEdit) {
-        $izveletaisModeratorID = intval($_POST['moderators']);
+        $errorMessage = "Lietotājs nav atrasts.";
     } else {
-        $izveletaisModeratorID = $currentUserId;
-    }
-    $amata_nosaukums = $_POST['amata_nosaukums'];
-    $uznemuma_nosaukums = $_POST['uznemuma_nosaukums'];
-    $atrasanas_vieta = $_POST['atrasanas_vieta'];
-    $alga = floatval($_POST['alga']);
-    $prasibas = $_POST['prasibas'];
-    $darba_apraksts = $_POST['darba_apraksts'];
-    $statuss = $_POST['statuss'];
-    $publicesanas_datums = $_POST['publicesanas_datums'];
-    $beigu_datums = $_POST['beigu_datums'];
-    $tips = $_POST['tips'];
+        $userData = $resUser->fetch_assoc();
+        $currentUserId = $userData['Lietotaj_ID'];
+        $currentUserFullName = $userData['Vards'] . ' ' . $userData['Uzvards'];
+        $izveletaisModeratorID = $isEdit ? intval($_POST['moderators']) : $currentUserId;
 
-    $bilde_data = null;
-    if (!empty($_FILES['bilde']['tmp_name'])) {
-        $bilde_data = file_get_contents($_FILES['bilde']['tmp_name']);
-    }
+        // Проверка полей
+        $amata_nosaukums = trim($_POST['amata_nosaukums']);
+        $uznemuma_nosaukums = trim($_POST['uznemuma_nosaukums']);
+        $atrasanas_vieta = trim($_POST['atrasanas_vieta']);
+        $alga = floatval($_POST['alga']);
+        $prasibas = trim($_POST['prasibas']);
+        $darba_apraksts = trim($_POST['darba_apraksts']);
+        $statuss = $_POST['statuss'];
+        $publicesanas_datums = $_POST['publicesanas_datums'];
+        $beigu_datums = $_POST['beigu_datums'];
+        $tips = $_POST['tips'];
 
-    if ($isEdit) {
-        if ($bilde_data !== null) {
-            $stmt = $savienojums->prepare("UPDATE it_speks_Vakances SET Lietotaj_ID=?, Amata_nosaukums=?, Uznemuma_nosaukums=?, Atrasanas_vieta=?, Alga=?, Prasibas=?, Darba_apraksts=?, Statuss=?, Publicesanas_datums=?, Beigu_datums=?, Tips=?, Bilde=? WHERE Vakances_ID=?");
-            $stmt->bind_param("isssdssssssbi", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $bilde_data, $id);
+        // Проверка обязательных полей
+        if (empty($amata_nosaukums) || empty($uznemuma_nosaukums) || empty($atrasanas_vieta)) {
+            $errorMessage = "Lūdzu, aizpildiet visus obligātos laukus.";
         } else {
-            $stmt = $savienojums->prepare("UPDATE it_speks_Vakances SET Lietotaj_ID=?, Amata_nosaukums=?, Uznemuma_nosaukums=?, Atrasanas_vieta=?, Alga=?, Prasibas=?, Darba_apraksts=?, Statuss=?, Publicesanas_datums=?, Beigu_datums=?, Tips=? WHERE Vakances_ID=?");
-            $stmt->bind_param("isssdssssssi", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $id);
+            $bilde_data = null;
+            if (!empty($_FILES['bilde']['tmp_name'])) {
+                $bilde_data = file_get_contents($_FILES['bilde']['tmp_name']);
+            }
+
+            if ($isEdit) {
+                if ($bilde_data !== null) {
+                    $stmt = $savienojums->prepare("UPDATE it_speks_Vakances SET Lietotaj_ID=?, Amata_nosaukums=?, Uznemuma_nosaukums=?, Atrasanas_vieta=?, Alga=?, Prasibas=?, Darba_apraksts=?, Statuss=?, Publicesanas_datums=?, Beigu_datums=?, Tips=?, Bilde=? WHERE Vakances_ID=?");
+                    $stmt->bind_param("isssdssssssbi", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $bilde_data, $id);
+                } else {
+                    $stmt = $savienojums->prepare("UPDATE it_speks_Vakances SET Lietotaj_ID=?, Amata_nosaukums=?, Uznemuma_nosaukums=?, Atrasanas_vieta=?, Alga=?, Prasibas=?, Darba_apraksts=?, Statuss=?, Publicesanas_datums=?, Beigu_datums=?, Tips=? WHERE Vakances_ID=?");
+                    $stmt->bind_param("isssdssssssi", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $id);
+                }
+                $objekts = "Vakance ar ID $id";
+                $notikums = "Rediģēta";
+            } else {
+                $stmt = $savienojums->prepare("INSERT INTO it_speks_Vakances (Lietotaj_ID, Amata_nosaukums, Uznemuma_nosaukums, Atrasanas_vieta, Alga, Prasibas, Darba_apraksts, Statuss, Publicesanas_datums, Beigu_datums, Tips, Bilde) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("isssdsssssss", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $bilde_data);
+                $objekts = "Jauna vakance";
+                $notikums = "Pievienota";
+            }
+
+            if ($stmt->execute()) {
+                $stmtHist = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, NOW())");
+                $stmtHist->bind_param("sss", $currentUserFullName, $objekts, $notikums);
+                $stmtHist->execute();
+                $successMessage = "Vakance veiksmīgi saglabāta!";
+            } else {
+                $errorMessage = "Kļūda saglabājot vakanci: " . $stmt->error;
+            }
         }
-        $objekts = "Vakance ar ID $id";
-        $notikums = "Rediģēta";
-    } else {
-        $stmt = $savienojums->prepare("INSERT INTO it_speks_Vakances (Lietotaj_ID, Amata_nosaukums, Uznemuma_nosaukums, Atrasanas_vieta, Alga, Prasibas, Darba_apraksts, Statuss, Publicesanas_datums, Beigu_datums, Tips, Bilde) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssdsssssss", $izveletaisModeratorID, $amata_nosaukums, $uznemuma_nosaukums, $atrasanas_vieta, $alga, $prasibas, $darba_apraksts, $statuss, $publicesanas_datums, $beigu_datums, $tips, $bilde_data);
-        $objekts = "Jauna vakance";
-        $notikums = "Pievienota";
-    }
-
-    if ($stmt->execute()) {
-        // Лог действий
-        $stmtHist = $savienojums->prepare("INSERT INTO it_speks_DarbibuVesture (Lietotajs, Objekts, Notikums, Datums) VALUES (?, ?, ?, NOW())");
-        $stmtHist->bind_param("sss", $currentUserFullName, $objekts, $notikums);
-        $stmtHist->execute();
-
-        header("Location: crudVakances.php?success=" . ($isEdit ? "updated" : "created"));
-        exit();
-    } else {
-        echo "<p style='color:red;'>Kļūda saglabājot vakanci: " . $stmt->error . "</p>";
     }
 }
 ?>
 
 <main>
-    <div class="form-grid-card">
+    <div class="form-grid-card center">
         <div class="login-box">
             <h1><?= $isEdit ? "Rediģēt vakanci" : "Izveidot jaunu vakanci" ?></h1>
-            <p class="login-subtitle">Aizpildi visus laukus</p>
-            <div class="kluda"></div>
+            <?php if ($successMessage): ?>
+                <p style="color: green; font-weight: bold;"><?= htmlspecialchars($successMessage) ?></p>
+            <?php elseif ($errorMessage): ?>
+                <p style="color: red; font-weight: bold;"><?= htmlspecialchars($errorMessage) ?></p>
+            <?php endif; ?>
 
             <form action="<?= $isEdit ? '?id=' . $id : '' ?>" method="POST" enctype="multipart/form-data" class="form-layout">
 
@@ -224,26 +232,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <option value="Prakse" <?= $vakance['Tips'] === 'Prakse' ? 'selected' : '' ?>>Prakse</option>
                 </select>
 
+                <h2>Attēls</h2>
+                <?php if ($isEdit && $imagePreview): ?>
+                    <label>Esošais attēls:</label>
+                    <div><?= $imagePreview ?></div>
+                <?php endif; ?>
+
+                <label for="bilde" class="custom-file-label">
+                    <i class="fas fa-image"></i> <?= $isEdit ? "Mainīt attēlu" : "Pievienot bildi" ?>
+                </label>
+                <input type="file" name="bilde" id="bilde" accept="image/*" />
                 <button type="submit" class="ielogot" id="<?= $isEdit ? 'saglabat' : 'izveidot' ?>">
                     <i class="fas <?= $isEdit ? 'fa-save' : 'fa-plus-circle' ?>"></i>
                     <?= $isEdit ? 'Saglabāt izmaiņas' : 'Izveidot vakanci' ?>
                 </button>
+                <a href="crudVakances.php" class="back-to-main"><i class="fas fa-arrow-left"></i> Atpakaļ</a>
+            </form>
         </div>
-
-        <!-- Колонка 2: Изображение -->
-        <div class="login-box">
-            <h2>Attēls</h2>
-            <?php if ($isEdit && $imagePreview): ?>
-                <label>Esošais attēls:</label>
-                <div><?= $imagePreview ?></div>
-            <?php endif; ?>
-
-            <label for="bilde" class="custom-file-label">
-                <i class="fas fa-image"></i> <?= $isEdit ? "Mainīt attēlu" : "Pievienot bildi" ?>
-            </label>
-            <input type="file" name="bilde" id="bilde" accept="image/*" />
-        </div>
-        </form>
     </div>
 </main>
 
