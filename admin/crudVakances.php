@@ -12,7 +12,7 @@ require "../files/database.php";
 if (isset($_GET['delete_id'])) {
     $delete_id = (int)$_GET['delete_id'];
 
-    // Защита: проверяем, существует ли такая запись
+    // Проверяем, существует ли такая запись
     $checkQuery = "SELECT * FROM it_speks_Vakances WHERE Vakances_ID = $delete_id";
     $checkResult = mysqli_query($savienojums, $checkQuery);
 
@@ -20,7 +20,31 @@ if (isset($_GET['delete_id'])) {
         // Удаление
         $deleteQuery = "DELETE FROM it_speks_Vakances WHERE Vakances_ID = $delete_id";
         mysqli_query($savienojums, $deleteQuery);
-        // Перенаправление, чтобы избежать повторного удаления при обновлении
+
+        // Запись в историю действий
+        $lietotajs = $_SESSION['lietotajvards'];
+
+        // Получаем имя и фамилию пользователя
+        $userQuery = "SELECT Vards, Uzvards FROM it_speks_Lietotaji WHERE Lietotajvards = ?";
+        $stmt = mysqli_prepare($savienojums, $userQuery);
+        mysqli_stmt_bind_param($stmt, "s", $lietotajs);
+        mysqli_stmt_execute($stmt);
+        $userResult = mysqli_stmt_get_result($stmt);
+
+        if ($userRow = mysqli_fetch_assoc($userResult)) {
+            $pilnsVards = $userRow['Vards'] . " " . $userRow['Uzvards'];
+            $objekts = "Vakance ar ID $delete_id";
+            $notikums = "Dzēsta";
+            $datums = date("Y-m-d H:i:s");
+
+            $insertHistory = "INSERT INTO it_speks_DarbibuVesture (Objekts, Notikums, Datums, Lietotajs) 
+                              VALUES (?, ?, ?, ?)";
+            $stmt2 = mysqli_prepare($savienojums, $insertHistory);
+            mysqli_stmt_bind_param($stmt2, "ssss", $objekts, $notikums, $datums, $pilnsVards);
+            mysqli_stmt_execute($stmt2);
+        }
+
+        // Перенаправление
         header("Location: crudVakances.php?deleted=1");
         exit();
     }

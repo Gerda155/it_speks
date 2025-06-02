@@ -41,6 +41,16 @@
                 }, 2000);
             }
         });
+
+        // Автоматически убираем ?deleted=1 из URL после показа сообщения
+        const deleteMsg = document.getElementById('deleteMessage');
+        if (deleteMsg) {
+            setTimeout(() => {
+                const url = new URL(window.location);
+                url.searchParams.delete('deleted');
+                window.history.replaceState({}, document.title, url);
+            }, 2000); // 2 секунды на прочитать сообщение, можно поменять
+        }
     </script>
     </body>
 
