@@ -52,5 +52,5 @@ require "files/header_klients.php";
     <textarea name="pieredze" placeholder="Darba pieredze" required></textarea>
     <label>CV (PDF/DOC):</label>
     <input type="file" name="cv" accept=".pdf,.doc,.docx">
-    <button type="submit">Pieteikties</button>
+    <button type="submit" class="btn">Pieteikties</button>
 </form>
