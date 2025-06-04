@@ -90,7 +90,7 @@ if (!empty($statusParam)) {
 }
 
 // Пагинация
-$recordsPerPage = 7;
+$recordsPerPage = 10;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0
     ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $recordsPerPage;

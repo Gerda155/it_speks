@@ -51,6 +51,7 @@
                 window.history.replaceState({}, document.title, url);
             }, 2000); // 2 секунды на прочитать сообщение, можно поменять
         }
+
     </script>
     </body>
 
