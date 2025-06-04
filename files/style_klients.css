@@ -1,0 +1,454 @@
+:root {
+    --green: #2ecc71;
+    --light-green: #a4f3c9;
+    --white: #ffffff;
+    --gray: #f7f7f7;
+    --dark: #2c3e50;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", sans-serif;
+    background-color: var(--white);
+    color: var(--dark);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: var(--green);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.logo img {
+    width: 215px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links a.btn {
+    background-color: var(--green);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+}
+
+.menu-icon {
+    display: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.hero {
+    background: linear-gradient(135deg, var(--light-green), var(--white));
+    text-align: center;
+    padding: 6rem 2rem;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    color: var(--dark);
+}
+
+.hero p {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.7rem 1.4rem;
+    background-color: var(--green);
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #27ae60;
+}
+
+.section {
+    padding: 4rem 2rem;
+    background-color: var(--gray);
+    text-align: center;
+}
+
+.job-list {
+    list-style: none;
+    margin: 1rem 0 2rem;
+}
+
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    background: var(--dark);
+    color: white;
+}
+
+/* Анимации */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 1s forwards;
+}
+
+.delay {
+    animation-delay: 0.5s;
+}
+
+.delay2 {
+    animation-delay: 1s;
+}
+
+/*_______Vakances__________*/
+body.client-bg {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f7fdf8;
+    margin: 0;
+    color: #1d3d27;
+    animation: fadeInPage 0.8s ease-in;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 2em;
+}
+
+.page-title {
+    color: #2e8b57;
+    font-size: 2.5em;
+    margin-bottom: 1em;
+    text-align: center;
+}
+
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin-bottom: 2em;
+}
+
+.filters input, .filters select, .filters button {
+    padding: 0.5em;
+    font-size: 1em;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.filters button {
+    background: #2e8b57;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.filters button:hover {
+    background-color: #25623e;
+    transition: background-color 0.2s;
+}
+
+.vacancy-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5em;
+}
+
+.vacancy-card {
+    background: white;
+    border: 1px solid #cde0d3;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transform: translateY(20px);
+    animation: fadeUp 0.5s ease-out forwards;
+    
+}
+
+.vacancy-card:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.vacancy-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.vacancy-info {
+    padding: 1em;
+}
+
+.vacancy-info h2 {
+    margin: 0;
+    color: #25623e;
+}
+
+.vacancy-info p{
+    color: #222;
+}
+
+.vacancy-card:nth-child(1) { animation-delay: 0.1s; }
+.vacancy-card:nth-child(2) { animation-delay: 0.2s; }
+.vacancy-card:nth-child(3) { animation-delay: 0.3s; }
+.vacancy-card:nth-child(4) { animation-delay: 0.4s; }
+
+.pagination {
+    margin-top: 2em;
+    text-align: center;
+}
+
+.pagination a {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 0.5em 1em;
+    background: #e0f3e8;
+    color: #2e8b57;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.pagination a.active {
+    background: #2e8b57;
+    color: white;
+}
+
+/*___________Прокрутка_______________*/
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #7dd5b5; 
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #175d43; 
+  border-radius: 8px;
+  border: 2px solid #175d43;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--main)
+}
+
+/*__________VAKANCE_________________*/
+.single-vacancy {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 128, 0, 0.1);
+    animation: fadeIn 0.7s ease-in-out;
+}
+
+.vacancy-wrapper {
+    text-align: center;
+}
+
+.vacancy-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 128, 0, 0.2);
+}
+
+.vacancy-full-info p {
+    text-align: left;
+    font-size: 1.1em;
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.back-button {
+    margin-top: 30px;
+}
+
+.back-button .btn {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.back-button .btn:hover {
+    background-color: #388e3c;
+}
+
+.btn-apply {
+    display: inline-block;
+    padding: 10px 20px;
+    color: #3e8e41;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+.btn-apply:hover {
+    color: #111;
+}
+
+/*_____FORM________*/
+.container {
+    max-width: 700px;
+    margin: 50px auto;
+    padding: 40px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    margin-bottom: 30px;
+    text-align: center;
+    color: #222;
+}
+
+form{
+    width: 40%;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="file"],
+form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #fdfdfd;
+    transition: border-color 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form input[type="email"]:focus,
+form textarea:focus {
+    border-color: #7e57c2;
+    outline: none;
+}
+
+form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+form label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+button[type="submit"],
+.btn-apply {
+    display: inline-block;
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #7e57c2, #5e35b1);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s;
+    text-decoration: none;
+    text-align: center;
+}
+
+button[type="submit"]:hover,
+.btn-apply:hover {
+    background: linear-gradient(135deg, #673ab7, #4527a0);
+    transform: translateY(-2px);
+}
+
+.success-message {
+    background-color: #e8f5e9;
+    border: 1px solid #81c784;
+    color: #2e7d32;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    button[type="submit"],
+    .btn-apply {
+        width: 100%;
+        padding: 15px;
+        font-size: 18px;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        background: var(--white);
+        position: absolute;
+        top: 60px;
+        right: 0;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .nav-links.show {
+        display: flex;
+    }
+
+    .menu-icon {
+        display: block;
+    }
+}

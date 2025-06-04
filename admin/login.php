@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" name="parole" id="parole" placeholder="Parole" required />
                 <button class="ielogot" type="submit"><i class="fas fa-sign-in-alt"></i> Ielogoties</button>
             </form>
-            <a href="/" class="back-to-main"><i class="fas fa-arrow-left"></i> Atpakaļ uz galveno lapu</a><br>
+            <a href="../index.php" class="back-to-main"><i class="fas fa-arrow-left"></i> Atpakaļ uz galveno lapu</a><br>
             <a href="request_reset.php" class="back-to-main">Aizmirsi paroli?</a>
         </div>
     </div>
