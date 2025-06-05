@@ -26,7 +26,7 @@ body {
 
 a {
     text-decoration: none;
-    color: var(--green);
+    color: #222;
 }
 
 .navbar {
@@ -102,6 +102,41 @@ a {
 .job-list {
     list-style: none;
     margin: 1rem 0 2rem;
+}
+
+.job-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.job-card {
+    flex: 1 1 calc(33.333% - 20px);
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+}
+
+.job-card:hover {
+    transform: scale(1.02);
+}
+
+.job-card-img img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.job-card-info {
+    padding: 15px;
 }
 
 footer {
@@ -206,7 +241,7 @@ body.client-bg {
     padding: 1em;
 }
 
-.vacancy-info h2 {
+h2 {
     margin: 0;
     color: #25623e;
 }
@@ -292,6 +327,41 @@ body.client-bg {
 
 .back-button {
     margin-top: 30px;
+}
+
+.back-to-home {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+.back-to-home .back-arrow {
+    font-size: 20px;
+    text-decoration: none;
+    color: #333;
+    transition: color 0.3s;
+}
+
+.back-to-home .back-arrow:hover {
+    color: #007bff;
+}
+
+.back-to-home .back-text {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.back-to-home .back-text:hover {
+    text-decoration: underline;
+    color: #0056b3;
+}
+
+.back-text{
+    color: #388e3c;
 }
 
 .back-button .btn {
@@ -420,12 +490,6 @@ form label {
 .news-info {
     flex: 1;
     padding: 20px;
-}
-
-.news-info h2 {
-    margin-top: 0;
-    font-size: 1.4em;
-    color: #333;
 }
 
 .news-info p {

@@ -38,7 +38,9 @@ $news = mysqli_fetch_assoc($result);
                 <?= nl2br($news['Text']) ?>
             </div>
 
-            <a href="jaunumi.php" class="btn-apply">⬅ Atpakaļ uz sarakstu</a>
+            <div class="back-button">
+                <a href="jaunumi.php" class="btn-apply">⬅ Atpakaļ uz sarakstu</a>
+            </div>
         </div>
     </div>
 

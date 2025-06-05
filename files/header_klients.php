@@ -10,11 +10,12 @@
 
 <header class="navbar">
     <div class="logo">
-        <img src="files/ITsLogo.png" alt="Logo">
+        <a href="index.php"><img src="files/ITsLogo.png" alt="Logo"></a>
     </div>
     <nav class="nav-links">
         <a href="#par">Par mums</a>
         <a href="#vakances">Vakances</a>
+        <a href="#kontakti">Jaunumi</a>
         <a href="#kontakti">Kontakti</a>
         <a href="admin/login.php" class="btn">Pieslēgties</a>
     </nav>

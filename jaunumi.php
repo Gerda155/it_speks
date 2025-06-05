@@ -78,6 +78,11 @@ if (!$news) die("Kļūda vaicājumā: " . mysqli_error($savienojums));
                 <a href="?<?= http_build_query(array_merge($_GET, ['page' => $i])) ?>" class="<?= $i === $page ? 'active' : '' ?>"><?= $i ?></a>
             <?php endfor; ?>
         </div>
+        <div class="back-to-home">
+            <a href="index.php" class="back-arrow">⬅</a>
+            <a href="index.php" class="back-text">Atpakaļ uz galveno lapu</a>
+        </div>
+    </div>
     </div>
 
     <?php require "files/footer.php"; ?>

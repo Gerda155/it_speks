@@ -88,6 +88,11 @@ if (!$vakances) {
                 </a>
             <?php endfor; ?>
         </div>
+
+        <div class="back-to-home">
+            <a href="index.php" class="back-arrow">⬅</a>
+            <a href="index.php" class="back-text">Atpakaļ uz galveno lapu</a>
+        </div>
     </div>
 
-    <?php require "files/footer.php"; ?>
+<?php require "files/footer.php"; ?>
