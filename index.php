@@ -15,13 +15,19 @@
     </section>
 
     <section id="vakances" class="section">
-        <h2>Populārās vakances</h2>
+        <h2>Jaunākas vakances</h2>
         <ul class="job-list">
-            <li>🔍 Junior Web izstrādātājs - Riga</li>
-            <li>💻 Front-End interns - Liepāja</li>
-            <li>🧠 Data Analyst Assistant - Daugavpils</li>
+            <!--dinamiski-->
         </ul>
         <a href="vakances.php" class="btn">Skatīt visas</a>
+    </section>
+
+    <section id="jaunumi" class="section">
+        <h2>Jaunumi</h2>
+        <ul class="job-list">
+            <!--dinamiski-->
+        </ul>
+        <a href="jaunumi.php" class="btn">Skatīt visas</a>
     </section>
 
     <section id="kontakti" class="section">

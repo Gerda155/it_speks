@@ -8,6 +8,8 @@
 
 html {
     scroll-behavior: smooth;
+    background: url("ielogFons.png");
+    background-size: cover;
 }
 
 * {
@@ -18,7 +20,6 @@ html {
 
 body {
     font-family: "Segoe UI", sans-serif;
-    background-color: var(--white);
     color: var(--dark);
     line-height: 1.6;
 }
@@ -128,7 +129,6 @@ footer {
 /*_______Vakances__________*/
 body.client-bg {
     font-family: 'Segoe UI', sans-serif;
-    background: #f7fdf8;
     margin: 0;
     color: #1d3d27;
     animation: fadeInPage 0.8s ease-in;
@@ -379,6 +379,129 @@ form label {
     margin-bottom: 20px;
     border-radius: 8px;
     text-align: center;
+}
+
+/*_____JAUNUMI________*/
+.news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.news-card {
+    display: flex;
+    align-items: flex-start;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.news-card:hover {
+    transform: scale(1.01);
+}
+
+.news-img {
+    flex: 0 0 250px;
+    height: 180px;
+    overflow: hidden;
+    background: #eee;
+}
+
+.news-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.news-info {
+    flex: 1;
+    padding: 20px;
+}
+
+.news-info h2 {
+    margin-top: 0;
+    font-size: 1.4em;
+    color: #333;
+}
+
+.news-info p {
+    margin: 8px 0;
+    color: #555;
+}
+
+.news-info .date {
+    font-size: 0.9em;
+    color: #999;
+}
+
+.filters {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.filters input, .filters select, .filters button {
+    padding: 10px;
+    font-size: 1em;
+}
+
+/*____________JAUNUMS_____________*/
+.single-news {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 15px;
+}
+
+.news-full {
+    background: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.news-full-img {
+    max-height: 400px;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.news-full-img img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+}
+
+.news-full-date {
+    font-size: 0.95em;
+    color: #777;
+    margin-bottom: 25px;
+}
+
+.news-full-text {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #444;
+    white-space: pre-wrap;
+}
+
+.back-button {
+    display: inline-block;
+    margin-top: 30px;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    transition: 0.2s ease;
+}
+
+.back-button:hover {
+    color: #0056b3;
 }
 
 @media (max-width: 768px) {
