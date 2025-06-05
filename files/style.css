@@ -460,7 +460,7 @@ input:focus {
     margin-right: 6px;
 }
 
-/* Ошибка */
+/*________Ошибка_______________-*/
 .kluda {
     color: red;
     font-weight: bold;
@@ -512,7 +512,7 @@ input:focus {
     color: #fff;
 }
 
-/* Контейнер для кнопок */
+/*_________Контейнер для кнопок____________*/
 .modal-actions {
   margin-top: 25px;
   display: flex;
@@ -520,7 +520,7 @@ input:focus {
   gap: 15px;
 }
 
-/* Наследуем стиль кнопок */
+/*____________________Наследуем стиль кнопок___________*/
 .modal-actions .btn {
   padding: 10px 20px;
   font-size: 15px;
@@ -564,7 +564,7 @@ input:focus {
 }
 
 
-/* Стили для сортировки */
+/*______________Стили для сортировки______________*/
 .sort-dropdown {
     /*dropd по середине*/
     display: flex;
@@ -602,7 +602,7 @@ input:focus {
     outline: none;
 }
 
-/* Таблица */
+/*_________________Таблица__________________*/
 table {
     width: 100%;
     border-collapse: collapse;

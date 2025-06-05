@@ -1,8 +1,8 @@
 <?php
     #Savienojums ar datubazi
     $serveris = "localhost";
-    $lietotajs = "grobina1_fedotova";
-    $parole = "kWq02UUc3kpX@";
+    $lietotajs = "grobina1_k8";
+    $parole = "f73a15M#9";
     $datubaze = "grobina1_fedotova";
 
     $savienojums = mysqli_connect($serveris, $lietotajs, $parole, $datubaze);
