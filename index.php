@@ -4,6 +4,7 @@
     <section class="hero">
         <div class="hero-content">
             <h1 class="fade-in">Atrodi savu ideālo darbu IT jomā</h1>
+            <P>POPA</P>
             <p class="fade-in delay">Mēs savienojam talantus ar iespējām visā Latvijā</p>
             <a href="#vakances" class="btn fade-in delay2">Sākt meklēšanu</a>
         </div>

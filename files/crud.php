@@ -13,7 +13,6 @@
         <?php endif; ?>
     </div>
 
-
     <div id="deleteModal" class="modal hidden">
         <div class="modal-content">
             <p>Vai tiešām vēlaties dzēst ierakstu?</p>
